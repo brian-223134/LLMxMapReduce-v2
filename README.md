@@ -4,7 +4,7 @@
 
 # 🎉 News
 - [x] **`2025.09.13`** Release the code for LLMxMapReduce-V3.
-- [x] **`2025.04.22`** Release [SurveyGO](https://surveygo.modelbest.cn/), an online writting system driven by LLMxMapReduce-V2.
+- [x] **`2025.04.22`** Release [SurveyGO](https://surveygo.znyx.com.cn/), an online writting system driven by LLMxMapReduce-V2.
 - [x] **`2025.04.09`** Release the paper of LLMxMapReduce-V2 in [arXiv](https://arxiv.org/abs/2504.05732).
 - [x] **`2025.02.21`** Add support for both OpenAI API and OpenAI-compatible APIs (e.g., vLLM).
 - [x] **`2024.10.12`** Release the paper of LLMxMapReduce-V1 in [arXiv](https://arxiv.org/abs/2410.09342).
