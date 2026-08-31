@@ -31,7 +31,7 @@ class GoogleRequest:
     @retry(
         wait=wait_random_exponential(multiplier=2, max=60),
         stop=stop_after_attempt(10),
-        retry=retry_if_exception_type(Exception)  # 网络、限流、服务端错误等都重试
+        retry=retry_if_exception_type(Exception)  # retry on any error (network, rate limit, server error, ...)
     )
     def completion(self, messages, **kwargs) -> str:
 

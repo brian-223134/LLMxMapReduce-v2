@@ -1,0 +1,81 @@
+{
+    "encode": {},
+    "hidden": {
+        "group": {
+            "neuron": {
+                "model": "meta-llama/llama-3.3-70b-instruct",
+                "infer_type": "OpenAI"
+            }
+        },
+        "skeleton": {
+            "single": {
+                "model": "meta-llama/llama-3.3-70b-instruct",
+                "infer_type": "OpenAI"
+            },
+            "concat": {
+                "model": "meta-llama/llama-3.3-70b-instruct",
+                "infer_type": "OpenAI"
+            }
+        },
+        "digest": {
+            "single": {
+                "model": "meta-llama/llama-3.3-70b-instruct",
+                "infer_type": "OpenAI"
+            },
+            "merge": {
+                "model": "meta-llama/llama-3.3-70b-instruct",
+                "infer_type": "OpenAI"
+            }
+        },
+        "skeleton_refinement": {
+            "cluster": {
+                "model": "meta-llama/llama-3.3-70b-instruct",
+                "infer_type": "OpenAI"
+            },
+            "convolution": {
+                "modify": {
+                    "model": "meta-llama/llama-3.3-70b-instruct",
+                    "infer_type": "OpenAI"
+                },
+                "convolution_kernel": {
+                    "model": "meta-llama/llama-3.3-70b-instruct",
+                    "infer_type": "OpenAI"
+                },
+                "eval": {
+                    "model": "meta-llama/llama-3.3-70b-instruct",
+                    "infer_type": "OpenAI",
+                    "max_score": 10
+                }
+            },
+            "refine": {
+                "modify": {
+                    "model": "meta-llama/llama-3.3-70b-instruct",
+                    "infer_type": "OpenAI"
+                },
+                "refine": {
+                    "model": "meta-llama/llama-3.3-70b-instruct",
+                    "infer_type": "OpenAI"
+                },
+                "eval": {
+                    "model": "meta-llama/llama-3.3-70b-instruct",
+                    "infer_type": "OpenAI",
+                    "max_score": 10
+                }
+            }
+        }
+    },
+    "decode": {
+        "orchestra": {
+            "model": "meta-llama/llama-3.3-70b-instruct",
+            "infer_type": "OpenAI"
+        },
+        "polish": {
+            "model": "meta-llama/llama-3.3-70b-instruct",
+            "infer_type": "OpenAI"
+        },
+        "chart": {
+            "model": "meta-llama/llama-3.3-70b-instruct",
+            "infer_type": "OpenAI"
+        }
+    }
+}

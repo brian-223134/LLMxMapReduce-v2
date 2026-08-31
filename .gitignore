@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.pyc
+output/
+LLMxMapReduce_V2/output/
+data/surveyeval/*.parquet
+data/pools/
+data/inputs/
+
+HANDOFF.md
+CLAUDE.md
+.claude/
+docs/

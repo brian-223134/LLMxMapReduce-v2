@@ -11,8 +11,6 @@ from async_d import Pipeline
 from src.decode.decode_pipeline import DecodePipeline
 from src.encode.encode_pipeline import EncodePipeline
 from src.hidden.hidden_pipeline import HiddenPipeline
-from src.LLM_search import LLM_search
-from src.async_crawl import AsyncCrawler
 
 logger = logging.getLogger(__name__)
 
@@ -79,6 +77,12 @@ def main():
     logger.info(f"Start pipeline with args: {args}")
     logger.info(f"Current language: {os.environ.get('PROMPT_LANGUAGE', 'en')}")
     if args.topic:
+        # crawl4ai is only needed for the online-retrieval path; keep the
+        # --input_file path importable without it (same-corpus runs forbid
+        # online search anyway).
+        from src.LLM_search import LLM_search
+        from src.async_crawl import AsyncCrawler
+
         logger.info("set --topic, start to auto retrieve pages from Internet")
         # get retrieve urls
         logger.info("---------Start to generate queries.-------------")

@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 class RequestWrapper:
     _connection_semaphore = {}
-    _calls_count = 0 # 用来统计api的调用次数
-    _token_usage_history = [] # 用来统计每次调用时使用的token数
+    _calls_count = 0 # total number of API calls
+    _token_usage_history = [] # token usage of each call
 
     def __init__(self, model="gemini-2.0-flash-thinking-exp-1219", infer_type="OpenAI", connection=20, port=None):
         if not model:
