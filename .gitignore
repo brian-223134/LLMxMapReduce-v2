@@ -1,8 +1,13 @@
 .env
 __pycache__/
 *.pyc
-output/
-LLMxMapReduce_V2/output/
+# output은 무시하되, 컴파일된 서베이 PDF(output/tex/*.pdf)만 추적한다.
+# 디렉터리째 무시하면 하위 재포함(!)이 불가능하므로 /* 패턴으로 내용만 무시.
+/output/
+LLMxMapReduce_V2/output/*
+!LLMxMapReduce_V2/output/tex
+LLMxMapReduce_V2/output/tex/*
+!LLMxMapReduce_V2/output/tex/*.pdf
 data/surveyeval/*.parquet
 data/pools/
 data/inputs/

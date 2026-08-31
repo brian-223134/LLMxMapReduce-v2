@@ -162,7 +162,11 @@ cython_debug/
 .idea/
 .vscode/
 survey_data*
-output/
+# output 내용은 무시하되 컴파일된 서베이 PDF(output/tex/*.pdf)는 추적
+output/*
+!output/tex
+output/tex/*
+!output/tex/*.pdf
 input/
 logs/
 FActScore/
