@@ -11,3 +11,7 @@ HANDOFF.md
 CLAUDE.md
 .claude/
 docs/
+
+data/smoke/
+*.log
+nohup.out
