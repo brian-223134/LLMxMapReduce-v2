@@ -14,6 +14,17 @@ def parse_md_content(raw_content, label="markdown"):
     if md_content:
         md_content = md_content.group(1).strip()
     else:
+        # Fallback for models that return well-formed markdown without the
+        # requested code fence (observed with llama-3.3-70b in the decode
+        # stage): accept the raw text iff it contains no fence at all and
+        # starts with a heading, i.e. it is unambiguously the content itself.
+        stripped = raw_content.strip()
+        if label == "markdown" and "```" not in stripped and stripped.startswith("#"):
+            logger.warning(
+                "parse_md_content: no ```markdown fence found, accepting "
+                f"unfenced heading-led content ({len(stripped)} chars)"
+            )
+            return stripped
         raise MdNotFoundError(raw_content=raw_content)
     if "```" in md_content:
         raise MdNotFoundError(raw_content=raw_content)
