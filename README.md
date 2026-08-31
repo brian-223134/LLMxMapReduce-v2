@@ -13,7 +13,6 @@
 # 📚 Overview
 **LLMxMapReduce** is a divide-and-conquer framework designed to enhance modern large language models (LLMs) in understanding and generating long sequences. Developed collaboratively by **AI9STARS**, **OpenBMB**, and **THUNLP**, this framework draws inspiration from the classic MapReduce algorithm introduced in the field of big data. Our goal is to build an LLM-driven distributed computing system capable of efficiently processing long sequences. Here are the main versions of LLMxMapReduce:
 
-* [**LLMxMapReduce-V1**](https://github.com/thunlp/LLMxMapReduce/blob/main/LLMxMapReduce_V1): Utilizes a structured information protocol and in-context confidence calibration to enhance long-sequence understanding, enabling [MiniCPM3-4B](https://github.com/OpenBMB/MiniCPM) to outperform 70B-scale models in long-context evaluations.
 * [**LLMxMapReduce-V2**](https://github.com/thunlp/LLMxMapReduce/tree/main/LLMxMapReduce_V2): Introduces an entropy-driven convolutional test-time scaling mechanism to improve the integration of extremely large volumes of information, powering the online [SurveyGO](https://surveygo.modelbest.cn/) system.
 * [**LLMxMapReduce-V3**](https://github.com/thunlp/LLMxMapReduce/blob/main/LLMxMapReduce_V3): Introduces an interactive, modular, and self-organized multi-agent system for academic survey generation.
 
@@ -27,7 +26,7 @@ Long-form generation is crucial for a wide range of practical applications, typi
 </div>
 
 # ⚡️ Getting Started
-The following steps are about LLMxMapReduce-V2. If you want to use LLMxMapReduce-V1, you need to refer to [here](LLMxMapReduce_V1/README.md). If you want to use LLMxMapReduce-V3, you need to refer to [here](LLMxMapReduce_V3/README.md). 
+The following steps are about LLMxMapReduce-V2. If you want to use LLMxMapReduce-V3, you need to refer to [here](LLMxMapReduce_V3/README.md). 
 
 To get started, ensure all dependencies listed in requirements.txt are installed. You can do this by running:
 ```bash
@@ -92,7 +91,7 @@ The input data should have following components at least:
 You could use to use [this script](LLMxMapReduce_V2/scripts/output_to_md.py) to convert data from `.jsonl` to multiple `.md` files.
 
 # 📃 Evaluation
-The following steps are about LLMxMapReduce-V2. If you want to use LLMxMapReduce-V1, you need to refer to [here](LLMxMapReduce_V1/README.md).
+The following steps are about LLMxMapReduce-V2.
 
 Follow the steps below to set up the evaluation:
 ## 1. Download the Dataset
