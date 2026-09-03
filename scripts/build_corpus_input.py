@@ -43,12 +43,15 @@ def main():
     parser.add_argument("--min_chars", type=int, default=2000,
                         help="skip resolved texts shorter than this (parser floor is 500)")
     parser.add_argument("--limit_topics", type=int, default=None, help="smoke: only first N topics")
+    parser.add_argument("--fetch_delay", type=float, default=3.0,
+                        help="arXiv 요청 간 최소 간격(초). 429가 나면 올릴 것")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
 
     corpus_root = os.path.abspath(args.corpus_root)
     sys.path.insert(0, os.path.join(corpus_root, "src"))
     from common_corpus.fulltext.resolver import FullTextResolver  # noqa: E402
+    from common_corpus.fulltext.providers import ArxivFullTextProvider  # noqa: E402
     import duckdb  # noqa: E402
 
     corpus_dir = os.path.join(corpus_root, "data", "corpus", "v0.1-poc")
@@ -64,7 +67,8 @@ def main():
                 t = json.loads(line)
                 n_refs_by_title[t["title"]] = t.get("n_gt_refs")
 
-    resolver = FullTextResolver(corpus_dir=corpus_dir)
+    resolver = FullTextResolver(corpus_dir=corpus_dir,
+                                provider=ArxivFullTextProvider(delay_seconds=args.fetch_delay))
     con = duckdb.connect()
 
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
@@ -127,6 +131,7 @@ def main():
         "view_manifest": view_manifest,
         "pools_file": os.path.abspath(args.pools),
         "pool_mode": args.pool_mode,
+        "fetch_delay": args.fetch_delay,
         "min_chars": args.min_chars,
         "topics": stats,
     }
