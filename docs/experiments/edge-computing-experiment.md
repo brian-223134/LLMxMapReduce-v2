@@ -3,7 +3,8 @@
 같은 corpus(same-corpus) 재현 체인 검증을 위해 **Edge Computing** 토픽으로 수행한
 스모크(pool 20편) 및 본편급(pool 187편) 실측 기록. 세미나 발표용 메트릭 정리.
 
-관련 문서: [commoncorpus-setup.md](commoncorpus-setup.md) (절차·설계 근거), `HANDOFF.md` (현황 요약)
+관련 문서: [commoncorpus-setup.md](../commoncorpus-setup.md) (절차·설계 근거), `HANDOFF.md` (현황 요약)
+· [instruction-tuning-bench2512.md](instruction-tuning-bench2512.md) (bench-2512 첫 토픽)
 
 ## 1. 공통 설정
 
