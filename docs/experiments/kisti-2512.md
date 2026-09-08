@@ -61,6 +61,31 @@ topic 별 (`data/kisti-2512/pool_ceiling.json`, `input.jsonl.manifest.json`):
 pool ceiling 이 낮은 이유는 검색 쿼리가 topic 제목 한 문장뿐이기 때문이다(AutoSurvey 는 LLM 이 만든 여러 쿼리로 검색).
 input ceiling 은 quota(=n_gt_refs)만큼만 자르므로 더 낮다. 결과표에는 topic ceiling(view 안 GT 비율)과 함께 둘 다 병기한다.
 
+### 2.1 view v2 전환 (2026-09-08 08:08 UTC) — Stage 1·2 재실행
+
+KISTI 쪽이 view를 **v2(1,651,487편)** 로 교체했다: v1에서 GT 본체 사본 2편(§3)과 **cutoff 이후인 arXiv 2601.\* 212편**(KISTI year=2025 오기재)을 뺀 것.
+경로·명령·`.env`는 그대로이고 AutoSurvey DB는 재빌드가 아니라 v1 인덱스에서 214 벡터만 제거한 것이다. 이 레포에서 검증한 내용:
+
+| 검증 | 결과 |
+|---|---|
+| view v2 | papers.parquet sha `591b4325`, 2601.\* id **0건**, `exclude_ids.txt` 40키 |
+| AutoSurvey v2 인덱스 | abs·title 모두 ntotal 1,651,487 = id 맵 크기, 표본 200개 벡터가 v1과 **바이트 동일**, 제거 214 = 2601.\* 212 + 누수 2 |
+| v1 산출물 오염 | 옛 pools에 2601.\* id 47건(중복 포함), 옛 input에 4편 → `*.v1.*` 로 보존 후 재실행 |
+| GT 분모 | `gap_to_80_refs.jsonl`(in_view 2,764)은 미갱신이나 제거 214편 중 GT ref 0건 → 분모 유효 |
+| Stage 1 (v2) | 25 topic × 1,200편, 2601.\* 0, 누수 id 0 |
+| Stage 2 (v2) | quota 전부 충족, excluded 0(이중 게이트 `exclude_extra.txt` 는 이제 무해), too_short 1 · too_long 2, 2601.\* 0, hard hits 0 |
+| ceiling | 평균 pool 24.6% / input 8.1% (v1과 같음) |
+
+topic 별로 달라진 것 (`topics.kisti.jsonl` 의 n_gt_refs +1 세 topic 과 2601.\* 제거 영향):
+
+| slug | quota | pool hits | input hits |
+|---|---|---|---|
+| diffusion-model-alignment | 127 → 128 | 23 → 23 | 11 → 11 |
+| edge-slm-cloud-llm | 138 → 139 | 28 → 28 | 15 → 15 |
+| agentic-satellite-networks | 67 → 68 | 10 → 10 | 3 → 3 |
+
+§2 의 topic 표는 v1 기준 수치이며 위 차이 외에는 동일하다. **§4 스모크는 v1 실행분**(입력 manifest sha `c7b8d4e7`)이고 재현하지 않는다. 본편은 v2 입력으로 돌린다.
+
 ## 3. view 가 놓친 GT 누수 2건 (`scripts/leak_check.py`)
 
 | view id | 정체 | 어디서 |
@@ -111,10 +136,10 @@ parallel_num 4 에서는 호출·비용을 topic 별로 나눌 수 없으므로 
 ## 5. 재현성 체인
 
 ```
-view              = kisti-2512 (view_manifest.json sha: input.jsonl.manifest.json → view_manifest.files_sha256)
-retrieval 백엔드  = ../AutoSurvey/database_kisti-kisti-2512 (content_sha256 54b4e7b4…, 1,651,701 벡터)
-pools             = data/kisti-2512/pools.jsonl (retrieve_num 1200, exclude_ids.txt 게이트)
-input             = data/kisti-2512/input.jsonl (+ .manifest.json — min/max_chars, exclude_ids, topic 별 통계)
+view              = kisti-2512 **v2** (papers.parquet sha 591b4325; v1 c7b8d4e7 은 data/views/kisti-2512-v1/)
+retrieval 백엔드  = ../AutoSurvey/database_kisti-kisti-2512 v2 (1,651,487 벡터, view_diff_manifest.json created_at 2026-09-08T07:17Z; v1 은 database_kisti-kisti-2512-v1/)
+pools             = data/kisti-2512/pools.jsonl (v2; retrieve_num 1200, exclude_ids.txt 40키 게이트) — v1 은 pools.v1.jsonl
+input             = data/kisti-2512/input.jsonl (v2, + .manifest.json — min/max_chars, exclude_ids, topic 별 통계) — v1 은 input.v1.jsonl
 fulltext          = body_store.sqlite (science_datalake_260825)
 프로파일          = .env (temperature 0.6, max_tokens 8192, retry truncated), config/model_config_llama.json
 run manifest      = data/manifest/<run>.json (scripts/run_manifest.py) — smoke: data/manifest/smoke.json

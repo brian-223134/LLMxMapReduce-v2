@@ -39,12 +39,12 @@
     {
       "title": "Alignment of Diffusion Models",
       "slug": "diffusion-model-alignment",
-      "n_gt_refs": 128,
+      "n_gt_refs": 127,
       "n_gt_in_view": 139,
       "pool_size": 1200,
       "pool_hits": 23,
       "pool_ceiling": 0.1655,
-      "input_size": 128,
+      "input_size": 127,
       "input_hits": 11,
       "input_ceiling": 0.0791
     },
@@ -207,12 +207,12 @@
     {
       "title": "Collaborative Inference between Edge SLMs and Cloud LLMs",
       "slug": "edge-slm-cloud-llm",
-      "n_gt_refs": 139,
+      "n_gt_refs": 138,
       "n_gt_in_view": 136,
       "pool_size": 1200,
       "pool_hits": 28,
       "pool_ceiling": 0.2059,
-      "input_size": 139,
+      "input_size": 138,
       "input_hits": 15,
       "input_ceiling": 0.1103
     },
@@ -279,12 +279,12 @@
     {
       "title": "Agentic Satellite-Augmented Low-Altitude Economy and Terrestrial Networks",
       "slug": "agentic-satellite-networks",
-      "n_gt_refs": 68,
+      "n_gt_refs": 67,
       "n_gt_in_view": 66,
       "pool_size": 1200,
       "pool_hits": 10,
       "pool_ceiling": 0.1515,
-      "input_size": 68,
+      "input_size": 67,
       "input_hits": 3,
       "input_ceiling": 0.0455
     },

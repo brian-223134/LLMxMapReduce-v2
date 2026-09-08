@@ -2,7 +2,7 @@
   "view": "kisti-2512",
   "view_manifest": {
     "view_name": "kisti-2512",
-    "created_at": "2026-09-08T07:01:07+00:00",
+    "created_at": "2026-09-07T05:10:55+00:00",
     "config": {
       "cutoff": "2025-12-31",
       "cutoff_rule": "meta.year <= 2025 (연 단위)",
@@ -14,14 +14,11 @@
         "arxiv_cs_ids": 748255
       },
       "exclude_all_candidates": false,
-      "exclude_keys": 40,
+      "exclude_keys": 38,
       "exclude_keys_file": "exclude_keys.txt",
       "include_keys_file": null,
       "extra_parquet": null,
-      "id_convention": "arXiv base id for 10.48550/arxiv.* DOIs, else lowercase DOI (docs/asg/README.md §1.3 B)",
-      "arxiv_yymm_gate": "arXiv new-style id YYMM ≤ 2512",
-      "title_leak_check": "selected GT titles (normalized; full / head / head+a survey variants) must not remain in view",
-      "note": "v2 (2026-09-08) = v1 − GT 사본 2키(10.48550/arxiv.2507.16731, 10.1109/comst.2025.3648785) − arXiv YYMM>2512 212편; 제목 후검사 추가"
+      "id_convention": "arXiv base id for 10.48550/arxiv.* DOIs, else lowercase DOI (docs/asg/README.md §1.3 B)"
     },
     "source": {
       "package": "science_datalake_260825",
@@ -41,19 +38,18 @@
       },
       "included_by_keys": 0,
       "extra_records": 0,
-      "excluded_by_keys": 7,
-      "exclude_keys_present_in_kisti": 17,
-      "excluded_by_arxiv_yymm": 212,
+      "excluded_by_keys": 5,
+      "exclude_keys_present_in_kisti": 15,
       "dedup_dropped": 0,
-      "view_papers": 1651487,
-      "arxiv_id_papers": 454958,
+      "view_papers": 1651701,
+      "arxiv_id_papers": 455171,
       "by_added": {
-        "universe": 1651487
+        "universe": 1651701
       },
       "by_cs_source": {
-        "arxiv_cs": 67191,
-        "topic": 1376163,
-        "topic+arxiv_cs": 208133
+        "arxiv_cs": 67221,
+        "topic": 1376176,
+        "topic+arxiv_cs": 208304
       },
       "by_year_2019plus": {
         "2019": 120462,
@@ -62,20 +58,16 @@
         "2022": 167027,
         "2023": 148386,
         "2024": 149508,
-        "2025": 141276
+        "2025": 141490
       },
-      "authors_rows": 6372248,
-      "venue_rows": 1489057,
+      "authors_rows": 6373164,
+      "venue_rows": 1489271,
       "year_range": [
         1922,
         2025
       ]
     },
     "excluded_present": [
-      {
-        "key": "10.1109/comst.2025.3648785",
-        "reason": "gt:network/wireless-foundation-models"
-      },
       {
         "key": "10.1109/comst.2026.3660854",
         "reason": "gt:network/agentic-satellite-networks"
@@ -135,18 +127,13 @@
       {
         "key": "10.48550/arxiv.2409.18169",
         "reason": "twin:2409.18169"
-      },
-      {
-        "key": "10.48550/arxiv.2507.16731",
-        "reason": "gt:systems/edge-slm-cloud-llm"
       }
     ],
-    "title_leak_hits": [],
     "files_sha256": {
-      "papers.parquet": "591b4325e190170b174ca9722c4cb1ce5a914310566d90f34357bfdf638bc617",
-      "paper_ids.parquet": "b6ba0981d75405ed4bcbbb5a424b42abf9034f5a5dac018b08f196d8446dc0ed",
-      "authors.parquet": "522bec388b988cb3a51ebd2e9cfc2cd73d8f5bdf86ef59be95c728792c883003",
-      "venue.parquet": "394d60f64580727419a7a74f01ba025de7f2657a7b66b15bdaf76e19e54c19c9"
+      "papers.parquet": "c7b8d4e71d2467a7ee86c6353e784a5ece00e29a6c597602415a5c8a8ba777bc",
+      "paper_ids.parquet": "018c0bf8e0a12992f8fd329c7819dbe7e1837256cbe1686e870a2cbd51579c95",
+      "authors.parquet": "fa2a183bc9b00af131da4053008f7b1239499f4ee431e4b3f7870623db659aea",
+      "venue.parquet": "3417b743bed94ebab30de63d4fe072721fe05f541c7af5b54b52b24703590d10"
     },
     "env": {
       "python": "3.11.16",
@@ -176,8 +163,8 @@
       "too_long": 0,
       "walked": 109,
       "max_len": 165414,
-      "total_chars": 3575931,
-      "seconds": 1.0
+      "total_chars": 3585448,
+      "seconds": 0.1
     },
     {
       "title": "Function Calling in Large Language Models",
@@ -191,7 +178,7 @@
       "walked": 77,
       "max_len": 92026,
       "total_chars": 2652946,
-      "seconds": 0.8
+      "seconds": 0.0
     },
     {
       "title": "Model Merging in LLMs, MLLMs, and Beyond",
@@ -205,21 +192,21 @@
       "walked": 157,
       "max_len": 98504,
       "total_chars": 5384976,
-      "seconds": 1.8
+      "seconds": 0.1
     },
     {
       "title": "Alignment of Diffusion Models",
-      "quota": 128,
-      "resolved": 128,
+      "quota": 127,
+      "resolved": 127,
       "excluded": 0,
       "missing_meta": 0,
       "no_body": 0,
       "too_short": 0,
       "too_long": 0,
-      "walked": 128,
+      "walked": 127,
       "max_len": 187217,
-      "total_chars": 5092761,
-      "seconds": 1.8
+      "total_chars": 5066030,
+      "seconds": 0.1
     },
     {
       "title": "A Survey on the Optimization of Large Language Model-based Agents",
@@ -232,8 +219,8 @@
       "too_long": 0,
       "walked": 112,
       "max_len": 115735,
-      "total_chars": 4285167,
-      "seconds": 1.3
+      "total_chars": 4306647,
+      "seconds": 0.1
     },
     {
       "title": "Explainability of Text Processing and Retrieval Methods",
@@ -247,7 +234,7 @@
       "walked": 130,
       "max_len": 177040,
       "total_chars": 3982435,
-      "seconds": 1.2
+      "seconds": 0.1
     },
     {
       "title": "Trustworthy Retrieval-Augmented Generation",
@@ -261,7 +248,7 @@
       "walked": 87,
       "max_len": 85822,
       "total_chars": 3086338,
-      "seconds": 0.9
+      "seconds": 0.0
     },
     {
       "title": "Large Models for Time Series and Spatio-Temporal Data",
@@ -275,7 +262,7 @@
       "walked": 211,
       "max_len": 190993,
       "total_chars": 8946843,
-      "seconds": 3.1
+      "seconds": 0.1
     },
     {
       "title": "Deep Graph Clustering",
@@ -289,7 +276,7 @@
       "walked": 108,
       "max_len": 87218,
       "total_chars": 3540731,
-      "seconds": 0.9
+      "seconds": 0.0
     },
     {
       "title": "Negative Sampling in Recommendation",
@@ -303,7 +290,7 @@
       "walked": 135,
       "max_len": 146366,
       "total_chars": 4973874,
-      "seconds": 1.8
+      "seconds": 0.1
     },
     {
       "title": "Adversarial Attacks on Multimodal Large Language Models",
@@ -317,7 +304,7 @@
       "walked": 60,
       "max_len": 101998,
       "total_chars": 2151908,
-      "seconds": 0.3
+      "seconds": 0.0
     },
     {
       "title": "Detecting Training Data For Large Language Models",
@@ -331,7 +318,7 @@
       "walked": 57,
       "max_len": 85889,
       "total_chars": 1847555,
-      "seconds": 0.3
+      "seconds": 0.0
     },
     {
       "title": "Visual Adversarial Attacks and Defenses in the Physical World",
@@ -345,7 +332,7 @@
       "walked": 151,
       "max_len": 201461,
       "total_chars": 5470908,
-      "seconds": 0.3
+      "seconds": 0.1
     },
     {
       "title": "Harmful Fine-tuning Attacks and Defenses for Large Language Models",
@@ -359,7 +346,7 @@
       "walked": 107,
       "max_len": 101998,
       "total_chars": 4359176,
-      "seconds": 0.6
+      "seconds": 0.1
     },
     {
       "title": "Securing Large Language Models",
@@ -373,7 +360,7 @@
       "walked": 44,
       "max_len": 86018,
       "total_chars": 1674122,
-      "seconds": 0.2
+      "seconds": 0.0
     },
     {
       "title": "A Survey on Inference Optimization Techniques for Mixture of Experts Models",
@@ -387,7 +374,7 @@
       "walked": 116,
       "max_len": 123821,
       "total_chars": 4424512,
-      "seconds": 0.9
+      "seconds": 0.1
     },
     {
       "title": "Towards Efficient Large Language Model Serving",
@@ -401,21 +388,21 @@
       "walked": 61,
       "max_len": 149339,
       "total_chars": 2377886,
-      "seconds": 0.3
+      "seconds": 0.0
     },
     {
       "title": "Collaborative Inference between Edge SLMs and Cloud LLMs",
-      "quota": 139,
-      "resolved": 139,
-      "excluded": 0,
+      "quota": 138,
+      "resolved": 138,
+      "excluded": 1,
       "missing_meta": 0,
       "no_body": 0,
       "too_short": 0,
       "too_long": 0,
       "walked": 139,
       "max_len": 158063,
-      "total_chars": 5414249,
-      "seconds": 1.5
+      "total_chars": 5364836,
+      "seconds": 0.1
     },
     {
       "title": "Network Edge Inference for Large Language Models",
@@ -428,8 +415,8 @@
       "too_long": 0,
       "walked": 94,
       "max_len": 88764,
-      "total_chars": 3261910,
-      "seconds": 0.4
+      "total_chars": 3278979,
+      "seconds": 0.1
     },
     {
       "title": "Efficient training of large language models on distributed infrastructures",
@@ -443,35 +430,35 @@
       "walked": 170,
       "max_len": 119148,
       "total_chars": 5993295,
-      "seconds": 1.0
+      "seconds": 0.1
     },
     {
       "title": "Edge-Cloud Collaborative Computing on Distributed Intelligence and Model Optimization",
       "quota": 175,
       "resolved": 175,
-      "excluded": 0,
+      "excluded": 1,
       "missing_meta": 0,
       "no_body": 0,
       "too_short": 0,
       "too_long": 0,
-      "walked": 175,
+      "walked": 176,
       "max_len": 159142,
       "total_chars": 7324661,
-      "seconds": 1.3
+      "seconds": 0.1
     },
     {
       "title": "Multi-Modal Data-Enhanced Foundation Models for Prediction and Control in Wireless Networks",
       "quota": 116,
       "resolved": 116,
-      "excluded": 0,
+      "excluded": 1,
       "missing_meta": 0,
       "no_body": 0,
       "too_short": 0,
       "too_long": 0,
-      "walked": 116,
+      "walked": 117,
       "max_len": 104984,
-      "total_chars": 4354819,
-      "seconds": 1.0
+      "total_chars": 4380113,
+      "seconds": 0.1
     },
     {
       "title": "AI Reasoning for Wireless Communications and Networking",
@@ -485,21 +472,21 @@
       "walked": 75,
       "max_len": 173823,
       "total_chars": 3247295,
-      "seconds": 0.5
+      "seconds": 0.0
     },
     {
       "title": "Agentic Satellite-Augmented Low-Altitude Economy and Terrestrial Networks",
-      "quota": 68,
-      "resolved": 68,
+      "quota": 67,
+      "resolved": 67,
       "excluded": 0,
       "missing_meta": 0,
       "no_body": 0,
       "too_short": 0,
       "too_long": 0,
-      "walked": 68,
+      "walked": 67,
       "max_len": 85679,
-      "total_chars": 2538700,
-      "seconds": 0.5
+      "total_chars": 2524851,
+      "seconds": 0.0
     },
     {
       "title": "Towards AI-Assisted Sustainable Adaptive Video Streaming Systems",
@@ -513,7 +500,7 @@
       "walked": 83,
       "max_len": 117400,
       "total_chars": 3425220,
-      "seconds": 0.6
+      "seconds": 0.0
     }
   ]
 }
