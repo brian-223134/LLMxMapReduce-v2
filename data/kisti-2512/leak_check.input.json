@@ -1,0 +1,14 @@
+{
+  "exclude_keys": 38,
+  "search_terms": 38,
+  "titles": 30,
+  "files": {
+    "input": {
+      "path": "data/kisti-2512/input.jsonl",
+      "records": 25,
+      "hits": []
+    }
+  },
+  "hard_hits": 0,
+  "mentions": 0
+}

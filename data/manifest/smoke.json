@@ -1,0 +1,266 @@
+{
+  "run_name": "smoke",
+  "created_at": "2026-09-08T06:27:10+00:00",
+  "models": [
+    "meta-llama/llama-3.3-70b-instruct"
+  ],
+  "config_file": "/data2/chanjoong/survey-agent/LLMxMapReduce-v2/LLMxMapReduce_V2/config/model_config_llama.json",
+  "profile": {
+    "OPENAI_API_BASE": "https://openrouter.ai/api/v1",
+    "LLMXMR_PROVIDER": "akashml/fp8",
+    "LLMXMR_TEMPERATURE": "0.6",
+    "LLMXMR_MAX_TOKENS": "8192",
+    "LLMXMR_RETRY_TRUNCATED": null,
+    "LLMXMR_TRACK_COST": null,
+    "PROMPT_LANGUAGE": "en"
+  },
+  "git": {
+    "LLMxMapReduce-v2": "113a395",
+    "kisti_data": "dc5defa"
+  },
+  "input": {
+    "path": "data/kisti-2512/input.smoke.jsonl",
+    "sha256": "c60bde31d31535eff1261d1581f85de5ac8ceb4c5ed5e6808f5b1535327c8eaf",
+    "manifest": {
+      "view": "kisti-2512",
+      "view_manifest": {
+        "view_name": "kisti-2512",
+        "created_at": "2026-09-07T05:10:55+00:00",
+        "config": {
+          "cutoff": "2025-12-31",
+          "cutoff_rule": "meta.year <= 2025 (연 단위)",
+          "universe": "kisti",
+          "universe_rule": "year≤cutoff ∧ ¬is_retracted ∧ title ∧ abstract≥50 ∧ (language='en' ∨ NULL) ∧ (CS topic ∨ arXiv cs.* category)",
+          "arxiv_cs_snapshot": {
+            "path": "/data2/chanjoong/survey-agent/survey-search/data/papers.duckdb",
+            "sha256": "0be1794e95a5b609e5a8d086a8a334ea9e6effef3dcf899164561ad6e9973b0a",
+            "arxiv_cs_ids": 748255
+          },
+          "exclude_all_candidates": false,
+          "exclude_keys": 38,
+          "exclude_keys_file": "exclude_keys.txt",
+          "include_keys_file": null,
+          "extra_parquet": null,
+          "id_convention": "arXiv base id for 10.48550/arxiv.* DOIs, else lowercase DOI (docs/asg/README.md §1.3 B)"
+        },
+        "source": {
+          "package": "science_datalake_260825",
+          "paper_meta_sha256": "63324de065acd27be383ddebc730a20901e2dc4b0fd2be8e3b7319952ba7006c",
+          "paper_relations_sha256": "7634604b63cb300b7253d60b77339d398ac6e4f53d3595ec61427ab262edee76",
+          "paper_extras_sha256": "5d0ceb661e31af2191c995fa30e9986b50d3978c0ba87f676edb398acb72e384",
+          "body_store_sha256": "2dd893c35e507ea36b885a3f2cbaa454c0b24c95273fe64b6424453a679cedfa",
+          "sha256_source": "SHA256SUMS (패키지 동봉, 2026-09-03 VERIFY 276/277 OK)"
+        },
+        "counts": {
+          "anycs_within_cutoff": 1693797,
+          "universe": 1651706,
+          "universe_by_cs_source": {
+            "arxiv_cs": 67221,
+            "topic": 1376176,
+            "topic+arxiv_cs": 208309
+          },
+          "included_by_keys": 0,
+          "extra_records": 0,
+          "excluded_by_keys": 5,
+          "exclude_keys_present_in_kisti": 15,
+          "dedup_dropped": 0,
+          "view_papers": 1651701,
+          "arxiv_id_papers": 455171,
+          "by_added": {
+            "universe": 1651701
+          },
+          "by_cs_source": {
+            "arxiv_cs": 67221,
+            "topic": 1376176,
+            "topic+arxiv_cs": 208304
+          },
+          "by_year_2019plus": {
+            "2019": 120462,
+            "2020": 153283,
+            "2021": 169964,
+            "2022": 167027,
+            "2023": 148386,
+            "2024": 149508,
+            "2025": 141490
+          },
+          "authors_rows": 6373164,
+          "venue_rows": 1489271,
+          "year_range": [
+            1922,
+            2025
+          ]
+        },
+        "excluded_present": [
+          {
+            "key": "10.1109/comst.2026.3660854",
+            "reason": "gt:network/agentic-satellite-networks"
+          },
+          {
+            "key": "10.1109/comst.2026.3669216",
+            "reason": "gt:network/edge-cloud-collaboration"
+          },
+          {
+            "key": "10.1109/tkde.2026.3669747",
+            "reason": "gt:db/deep-graph-clustering"
+          },
+          {
+            "key": "10.1145/3777411",
+            "reason": "gt:ai/instruction-tuning-llms"
+          },
+          {
+            "key": "10.1145/3787849",
+            "reason": "gt:ai/model-merging"
+          },
+          {
+            "key": "10.1145/3789261",
+            "reason": "gt:ai/llm-agent-optimization"
+          },
+          {
+            "key": "10.1145/3793855",
+            "reason": "gt:db/negative-sampling-recsys"
+          },
+          {
+            "key": "10.1145/3794845",
+            "reason": "gt:systems/moe-inference-optimization"
+          },
+          {
+            "key": "10.1145/3796982",
+            "reason": "gt:ai/diffusion-model-alignment"
+          },
+          {
+            "key": "10.1145/3801957",
+            "reason": "gt:db/retrieval-explainability"
+          },
+          {
+            "key": "10.48550/arxiv.2211.01671",
+            "reason": "twin:2211.01671"
+          },
+          {
+            "key": "10.48550/arxiv.2212.07126",
+            "reason": "twin:2212.07126"
+          },
+          {
+            "key": "10.48550/arxiv.2310.10196",
+            "reason": "twin:2310.10196"
+          },
+          {
+            "key": "10.48550/arxiv.2406.02302",
+            "reason": "twin:2406.02302"
+          },
+          {
+            "key": "10.48550/arxiv.2409.18169",
+            "reason": "twin:2409.18169"
+          }
+        ],
+        "files_sha256": {
+          "papers.parquet": "c7b8d4e71d2467a7ee86c6353e784a5ece00e29a6c597602415a5c8a8ba777bc",
+          "paper_ids.parquet": "018c0bf8e0a12992f8fd329c7819dbe7e1837256cbe1686e870a2cbd51579c95",
+          "authors.parquet": "fa2a183bc9b00af131da4053008f7b1239499f4ee431e4b3f7870623db659aea",
+          "venue.parquet": "3417b743bed94ebab30de63d4fe072721fe05f541c7af5b54b52b24703590d10"
+        },
+        "env": {
+          "python": "3.11.16",
+          "duckdb": "1.5.5"
+        }
+      },
+      "fulltext_source": "body_store.sqlite (science_datalake_260825, sha256 2dd893c35e507ea36b885a3f2cbaa454c0b24c95273fe64b6424453a679cedfa)",
+      "pools_file": "/data2/chanjoong/survey-agent/LLMxMapReduce-v2/data/kisti-2512/pools.jsonl",
+      "topics_file": "/data2/chanjoong/kisti_data/data/topics.kisti.jsonl",
+      "pool_mode": "gt_count",
+      "min_chars": 2000,
+      "max_chars": 250000,
+      "exclude_file": "/data2/chanjoong/survey-agent/LLMxMapReduce-v2/data/kisti-2512/exclude_extra.txt",
+      "exclude_ids": [
+        "10.1109/comst.2025.3648785",
+        "2507.16731"
+      ],
+      "smoke_of": "input.jsonl"
+    }
+  },
+  "log": {
+    "path": "data/kisti-2512/log/smoke.log",
+    "records": 1882,
+    "calls": 367,
+    "total_cost_usd": 0.727213,
+    "usage_lines": 367,
+    "completion_tokens": {
+      "n": 367,
+      "min": 346,
+      "p50": 864,
+      "p90": 3735,
+      "p99": 4350,
+      "max": 5613,
+      "sum": 552004,
+      "at_guard": 0,
+      "guard": 8192,
+      "headroom_ratio": 1.46
+    },
+    "prompt_tokens": {
+      "n": 367,
+      "min": 540,
+      "p50": 5379,
+      "p90": 10946,
+      "p99": 17763,
+      "max": 20329,
+      "sum": 2621694
+    },
+    "finish_reasons": {
+      "stop": 367
+    },
+    "truncated_discarded": 0,
+    "truncated_kept": 0,
+    "fence_fallback": 8,
+    "illegal_bibkeys": 2,
+    "rate_limit_429": 10,
+    "internal_server_errors": 0,
+    "module_retries": 2,
+    "error_records": 0,
+    "tracebacks": 0,
+    "pipeline_args": "Namespace(topic=None, description=None, top_n=10, input_file='/data2/chanjoong/survey-agent/LLMxMapReduce-v2/data/kisti-2512/input.smoke.jsonl', output_file='/data2/chanjoong/survey-agent/LLMxMapReduce-v2/data/kisti-2512/output.smoke.jsonl', config_file='./config/model_config_llama.json', data_num=1, parallel_num=1, digest_group_mode='llm', skeleton_group_size=3, block_count=1, output_each_block=False, conv_layer=6, conv_kernel_width=3, conv_result_num=10, top_k=6, self_refine_count=3, self_refine_best_of=3)",
+    "started": "2026-09-08-05:35:28.726",
+    "finished": "2026-09-08-06:26:29.110",
+    "duration_s": 3060.4
+  },
+  "topics": [
+    {
+      "title": "Securing Large Language Models",
+      "cost_time": "00:47:45",
+      "block_cycle_count": 1,
+      "conv_layer": 6,
+      "outline_eval_score": 8.7,
+      "cite_ratio": 0.7954545454545454,
+      "n_papers": 44,
+      "n_refs_cited": 35,
+      "n_words": 2945,
+      "n_headings": 9,
+      "content_chars": 21083,
+      "stage2": {
+        "title": "Securing Large Language Models",
+        "quota": 44,
+        "resolved": 44,
+        "excluded": 0,
+        "missing_meta": 0,
+        "no_body": 0,
+        "too_short": 0,
+        "too_long": 0,
+        "walked": 44,
+        "max_len": 86018,
+        "total_chars": 1674122,
+        "seconds": 0.0
+      },
+      "pool_ceiling": {
+        "title": "Securing Large Language Models",
+        "slug": "llm-watermarking",
+        "n_gt_refs": 44,
+        "n_gt_in_view": 42,
+        "pool_size": 1200,
+        "pool_hits": 8,
+        "pool_ceiling": 0.1905,
+        "input_size": 44,
+        "input_hits": 0,
+        "input_ceiling": 0.0
+      }
+    }
+  ],
+  "n_topics": 1
+}
