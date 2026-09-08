@@ -74,7 +74,39 @@ FAISS 인덱스에는 남아 있어 **다른 3 agent 도 노출된다** → view
 
 ## 4. Stage 3 — 스모크 (Securing Large Language Models, pool 44편, parallel_num 1)
 
-(실행 중 — 완료 후 `scripts/run_manifest.py` 결과로 채움: 호출·비용·소요, completion_tokens 분포와 8192 가드 여유, 잘림 재요청 수, 펜스 fallback, 구조·단어·인용 수, 누수 검사)
+새 프로파일(temperature 0.6, max_tokens 8192, 잘림 재요청)의 첫 실행. `data/manifest/smoke.json`, 산출물 `data/kisti-2512/output.smoke.md`.
+
+| 항목 | 값 |
+|---|---|
+| 소요 / 호출 / 비용 | **00:47:45** (파이프라인 기준) / **367회** / **$0.727** (per-call 로그 합) |
+| completion_tokens | n=367, p50 864, p90 3735, p99 4350, **max 5613** → 가드 8192 대비 여유 **1.46배**, 가드 도달 0건 |
+| finish_reason | {'stop': 367} |
+| 잘림 재요청 | **0** (temp 0.6 에서 이 파이프라인은 367회 중 루프 0. AutoSurvey 의 "초안 30% 루프"는 여기로 옮겨오지 않음) |
+| 재시도·경고 | 모듈 retry 2 · 펜스 fallback 8 · illegal bibkey 제거 2 · 429 10(래퍼 재시도로 흡수) · ERROR 0 · Traceback 0 |
+| 구조 / 분량 | 헤딩 9개(대섹션 3 + 서브 5), 본문 **2,945단어**(21,083자) |
+| 인용 | pool 44편 중 **35편 인용** (cite_ratio 0.795) — 논문의 Ref. Recall 에 해당하는 pool 활용률 |
+| 내부 점수 | outline_eval 8.7, block_cycle_count 1, conv_layer 6 (SkeletonRefine 정상 수행) |
+| 누수 검사 | 본문·refs·papers 에 GT DOI·twin id·제목 **0회** (`leak_check.output.smoke.json`) |
+| 원문 형식 | s2orc/pmc plain text 를 digest 프롬프트가 그대로 소화 (파싱 실패 0) |
+
+관찰과 주의:
+
+- **가드 여유가 AutoSurvey 보다 빡빡하다.** 최대 출력 6건이 전부 convolution(skeleton 수정/refine, 전체 outline + digest 분석을 다시 씀) 호출로 4.2~5.6K 토큰이다. 저장된 outline 은 44편 pool 에서 15.2K자, edge 187편(temp 0)에서 14.1K자로 pool 크기에 비례하지 않으므로 큰 topic 에서도 8192 안쪽일 가능성이 높지만, 본편에서 `at_guard>0` 이 convolution 에서 나오면 그것은 루프가 아니라 정상 출력 절단이다 → 그때는 LLM×MR 만 `LLMXMR_MAX_TOKENS` 를 12288 로 올리고 프로파일 편차로 기록한다.
+- **파이프라인은 저장 후 종료하지 않는다** (`start_pipeline.py` 의 `while True: gevent.sleep(5)`, 원본 설계). 스모크는 저장 확인 후 수동 kill 했고, `run_stages.sh stage3` 에 OUTPUT 줄 수 == N 이면 자동 종료하는 루프를 넣었다(`AUTO_STOP=0` 으로 끌 수 있음).
+- **키가 공유되고 있다.** 스모크 전후 키 사용액 차 $1.50 vs per-call 합 $0.727 — 같은 시간에 다른 프로세스가 같은 키를 썼다. 비용 기록은 per-call 로그 합(manifest)을 정본으로 한다.
+- 시간의 대부분은 SkeletonRefine(convolution 6층 × 10 + best-of-3 refine 3회) 이라 pool 44편에서도 48분이다. 25편 본편은 `--parallel_num 4` 로 4~6시간, 비용은 편당 ≈ $0.31 + $0.008×pool(평균 109) ≈ $1.2 → **약 $30**. 키 잔여 $3.75 라 **본편 전에 키 한도 상향이 필요**하다.
+- 이전 temp 0 실측(edge 187편 3,431단어, cite_ratio 0.332)과 비교하면 44편 pool 에서 2,945단어·cite_ratio 0.795 — 분량은 pool 보다 topic·skeleton 에, 인용률은 pool 크기에 좌우된다는 기존 관찰과 일치.
+
+## 4.1 본편 실행 방법 (25 topic)
+
+```bash
+S=/data2/chanjoong/kisti_data/adapter/llmxmapreduce/run_stages.sh
+$S stage3                              # data/kisti-2512/input.jsonl → output.jsonl, 로그 data/kisti-2512/log/stage3.log, 자동 종료
+python scripts/run_manifest.py --log data/kisti-2512/log/stage3.log --output_jsonl data/kisti-2512/output.jsonl \
+    --input_jsonl data/kisti-2512/input.jsonl --pool_ceiling data/kisti-2512/pool_ceiling.json --run_name stage3
+python scripts/leak_check.py --output data/kisti-2512/output.jsonl
+```
+parallel_num 4 에서는 호출·비용을 topic 별로 나눌 수 없으므로 manifest 의 run 수준 값만 쓴다. 중간에 죽으면 output.jsonl 에 저장된 topic 을 input 에서 빼고 `INPUT=… OUTPUT=…` 로 이어 돌린다(파이프라인은 append).
 
 ## 5. 재현성 체인
 
@@ -85,7 +117,8 @@ pools             = data/kisti-2512/pools.jsonl (retrieve_num 1200, exclude_ids.
 input             = data/kisti-2512/input.jsonl (+ .manifest.json — min/max_chars, exclude_ids, topic 별 통계)
 fulltext          = body_store.sqlite (science_datalake_260825)
 프로파일          = .env (temperature 0.6, max_tokens 8192, retry truncated), config/model_config_llama.json
-run manifest      = data/manifest/<run>.json (scripts/run_manifest.py)
+run manifest      = data/manifest/<run>.json (scripts/run_manifest.py) — smoke: data/manifest/smoke.json
+스모크 산출물     = data/kisti-2512/output.smoke.md (+ leak_check.output.smoke.json)
 ```
 
 `data/kisti-2512/`는 gitignore 대상(원문 109MB). `exclude_extra.txt`·`pool_ceiling.json`·manifest 류만 추적한다.
