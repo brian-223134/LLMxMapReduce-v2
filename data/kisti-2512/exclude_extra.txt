@@ -1,0 +1,5 @@
+# LLM×MR Stage 2 추가 제외 — view kisti-2512 가 놓친 GT 본체/twin (scripts/leak_check.py 로 2026-09-08 발견).
+# 형식: view id 한 줄씩 (arXiv base id 또는 소문자 DOI). 같은 논문이 AutoSurvey KISTI FAISS 인덱스에도 남아 있으므로
+# 다른 agent 도 노출된다 → view 재생성 시 exclude_keys 에 합쳐야 한다.
+2507.16731                    # edge-slm-cloud-llm GT(10.1145/3838593)의 등록 안 된 arXiv 선행판. edge-cloud-collaboration pool 에도 등장
+10.1109/comst.2025.3648785    # wireless-foundation-models GT(arXiv:2601.03181)의 IEEE COMST 출판본 DOI
