@@ -1,0 +1,712 @@
+{
+  "view": "kisti-2608",
+  "paper_dates": "/data2/chanjoong/kisti_data/data/views/kisti-2608/paper_dates.json",
+  "sidecar": {
+    "created_at": "2026-09-14T13:26:03+00:00",
+    "view_papers_sha256": "c1a0c6b3fe1bd46f1a7d3d14832b53933dfb0b1c021531c23df109ba453ca156",
+    "records": 1663704,
+    "by_precision": {
+      "month": 460772,
+      "day": 1198375,
+      "year": 4557
+    }
+  },
+  "topic_policy_file": "../AutoSurvey/data/topic_policy.kisti-2608.jsonl",
+  "rule": "upper_bound(sidecar 공개일) < retrieval_cutoff_at ∧ id ∉ exclude_ids; 결과 원본은 수정하지 않음",
+  "files": {
+    "input": {
+      "path": "data/kisti-2608/input.jsonl",
+      "records": 25,
+      "topics": [
+        {
+          "title": "Instruction Tuning for Large Language Models",
+          "topic_id": "instruction-tuning-llms",
+          "retrieval_cutoff_at": "2023-08-21",
+          "policy": "topic_cutoff",
+          "n_papers": 95,
+          "n_ref_lines": 0,
+          "n_cited": 95,
+          "listed": {
+            "allowed": 95,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 95,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Function Calling in Large Language Models",
+          "topic_id": "llm-function-calling",
+          "retrieval_cutoff_at": "2026-01-14",
+          "policy": "topic_cutoff",
+          "n_papers": 74,
+          "n_ref_lines": 0,
+          "n_cited": 74,
+          "listed": {
+            "allowed": 74,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 74,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Model Merging in LLMs, MLLMs, and Beyond",
+          "topic_id": "model-merging",
+          "retrieval_cutoff_at": "2024-08-14",
+          "policy": "topic_cutoff",
+          "n_papers": 139,
+          "n_ref_lines": 0,
+          "n_cited": 139,
+          "listed": {
+            "allowed": 139,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 139,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Alignment of Diffusion Models",
+          "topic_id": "diffusion-model-alignment",
+          "retrieval_cutoff_at": "2026-02-10",
+          "policy": "topic_cutoff",
+          "n_papers": 139,
+          "n_ref_lines": 0,
+          "n_cited": 139,
+          "listed": {
+            "allowed": 139,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 139,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "A Survey on the Optimization of Large Language Model-based Agents",
+          "topic_id": "llm-agent-optimization",
+          "retrieval_cutoff_at": "2025-03-16",
+          "policy": "topic_cutoff",
+          "n_papers": 102,
+          "n_ref_lines": 0,
+          "n_cited": 102,
+          "listed": {
+            "allowed": 102,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 102,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Explainability of Text Processing and Retrieval Methods",
+          "topic_id": "retrieval-explainability",
+          "retrieval_cutoff_at": "2022-12-14",
+          "policy": "topic_cutoff",
+          "n_papers": 113,
+          "n_ref_lines": 0,
+          "n_cited": 113,
+          "listed": {
+            "allowed": 113,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 113,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Trustworthy Retrieval-Augmented Generation",
+          "topic_id": "trustworthy-rag",
+          "retrieval_cutoff_at": "2025-02-08",
+          "policy": "topic_cutoff",
+          "n_papers": 78,
+          "n_ref_lines": 0,
+          "n_cited": 78,
+          "listed": {
+            "allowed": 78,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 78,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Large Models for Time Series and Spatio-Temporal Data",
+          "topic_id": "large-models-timeseries",
+          "retrieval_cutoff_at": "2023-10-16",
+          "policy": "topic_cutoff",
+          "n_papers": 183,
+          "n_ref_lines": 0,
+          "n_cited": 183,
+          "listed": {
+            "allowed": 183,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 183,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Deep Graph Clustering",
+          "topic_id": "deep-graph-clustering",
+          "retrieval_cutoff_at": "2022-11-23",
+          "policy": "topic_cutoff",
+          "n_papers": 83,
+          "n_ref_lines": 0,
+          "n_cited": 83,
+          "listed": {
+            "allowed": 83,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 83,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Negative Sampling in Recommendation",
+          "topic_id": "negative-sampling-recsys",
+          "retrieval_cutoff_at": "2026-01-28",
+          "policy": "topic_cutoff",
+          "n_papers": 138,
+          "n_ref_lines": 0,
+          "n_cited": 138,
+          "listed": {
+            "allowed": 138,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 138,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Adversarial Attacks on Multimodal Large Language Models",
+          "topic_id": "mllm-adversarial-attacks",
+          "retrieval_cutoff_at": "2026-03-30",
+          "policy": "topic_cutoff",
+          "n_papers": 52,
+          "n_ref_lines": 0,
+          "n_cited": 52,
+          "listed": {
+            "allowed": 52,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 52,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Detecting Training Data For Large Language Models",
+          "topic_id": "llm-training-data-detection",
+          "retrieval_cutoff_at": "2026-01-07",
+          "policy": "topic_cutoff",
+          "n_papers": 56,
+          "n_ref_lines": 0,
+          "n_cited": 56,
+          "listed": {
+            "allowed": 56,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 56,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Visual Adversarial Attacks and Defenses in the Physical World",
+          "topic_id": "physical-adversarial-attacks",
+          "retrieval_cutoff_at": "2022-11-03",
+          "policy": "topic_cutoff",
+          "n_papers": 128,
+          "n_ref_lines": 0,
+          "n_cited": 128,
+          "listed": {
+            "allowed": 128,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 128,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Harmful Fine-tuning Attacks and Defenses for Large Language Models",
+          "topic_id": "harmful-finetuning",
+          "retrieval_cutoff_at": "2024-09-26",
+          "policy": "topic_cutoff",
+          "n_papers": 84,
+          "n_ref_lines": 0,
+          "n_cited": 84,
+          "listed": {
+            "allowed": 84,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 84,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Securing Large Language Models",
+          "topic_id": "llm-watermarking",
+          "retrieval_cutoff_at": "2025-12-05",
+          "policy": "topic_cutoff",
+          "n_papers": 44,
+          "n_ref_lines": 0,
+          "n_cited": 44,
+          "listed": {
+            "allowed": 44,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 44,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "A Survey on Inference Optimization Techniques for Mixture of Experts Models",
+          "topic_id": "moe-inference-optimization",
+          "retrieval_cutoff_at": "2024-12-18",
+          "policy": "topic_cutoff",
+          "n_papers": 111,
+          "n_ref_lines": 0,
+          "n_cited": 111,
+          "listed": {
+            "allowed": 111,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 111,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Towards Efficient Large Language Model Serving",
+          "topic_id": "kv-cache-serving",
+          "retrieval_cutoff_at": "2026-07-01",
+          "policy": "topic_cutoff",
+          "n_papers": 61,
+          "n_ref_lines": 0,
+          "n_cited": 61,
+          "listed": {
+            "allowed": 61,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 61,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Collaborative Inference between Edge SLMs and Cloud LLMs",
+          "topic_id": "edge-slm-cloud-llm",
+          "retrieval_cutoff_at": "2025-07-22",
+          "policy": "topic_cutoff",
+          "n_papers": 134,
+          "n_ref_lines": 0,
+          "n_cited": 134,
+          "listed": {
+            "allowed": 134,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 134,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Network Edge Inference for Large Language Models",
+          "topic_id": "llm-edge-inference",
+          "retrieval_cutoff_at": "2026-04-24",
+          "policy": "topic_cutoff",
+          "n_papers": 85,
+          "n_ref_lines": 0,
+          "n_cited": 85,
+          "listed": {
+            "allowed": 85,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 85,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Efficient training of large language models on distributed infrastructures",
+          "topic_id": "llm-distributed-training",
+          "retrieval_cutoff_at": "2024-07-29",
+          "policy": "topic_cutoff",
+          "n_papers": 165,
+          "n_ref_lines": 0,
+          "n_cited": 165,
+          "listed": {
+            "allowed": 165,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 165,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Edge-Cloud Collaborative Computing on Distributed Intelligence and Model Optimization",
+          "topic_id": "edge-cloud-collaboration",
+          "retrieval_cutoff_at": "2025-05-03",
+          "policy": "topic_cutoff",
+          "n_papers": 167,
+          "n_ref_lines": 0,
+          "n_cited": 167,
+          "listed": {
+            "allowed": 167,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 167,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Multi-Modal Data-Enhanced Foundation Models for Prediction and Control in Wireless Networks",
+          "topic_id": "wireless-foundation-models",
+          "retrieval_cutoff_at": "2025-12-26",
+          "policy": "topic_cutoff",
+          "n_papers": 119,
+          "n_ref_lines": 0,
+          "n_cited": 119,
+          "listed": {
+            "allowed": 119,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 119,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "AI Reasoning for Wireless Communications and Networking",
+          "topic_id": "ai-wireless-reasoning",
+          "retrieval_cutoff_at": "2026-04-23",
+          "policy": "topic_cutoff",
+          "n_papers": 72,
+          "n_ref_lines": 0,
+          "n_cited": 72,
+          "listed": {
+            "allowed": 72,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 72,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Agentic Satellite-Augmented Low-Altitude Economy and Terrestrial Networks",
+          "topic_id": "agentic-satellite-networks",
+          "retrieval_cutoff_at": "2026-02-03",
+          "policy": "topic_cutoff",
+          "n_papers": 66,
+          "n_ref_lines": 0,
+          "n_cited": 66,
+          "listed": {
+            "allowed": 66,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 66,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        },
+        {
+          "title": "Towards AI-Assisted Sustainable Adaptive Video Streaming Systems",
+          "topic_id": "ai-video-streaming",
+          "retrieval_cutoff_at": "2024-06-04",
+          "policy": "topic_cutoff",
+          "n_papers": 71,
+          "n_ref_lines": 0,
+          "n_cited": 71,
+          "listed": {
+            "allowed": 71,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 71,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        }
+      ]
+    }
+  },
+  "totals": {
+    "input.cited.allowed": 2559,
+    "input.listed.allowed": 2559,
+    "input.cited.time_violation": 0,
+    "input.listed.time_violation": 0,
+    "input.cited.excluded_id": 0,
+    "input.listed.excluded_id": 0,
+    "input.cited.no_date": 0,
+    "input.listed.no_date": 0,
+    "input.cited.not_in_corpus": 0,
+    "input.listed.not_in_corpus": 0,
+    "input.unlisted_refs": 0
+  }
+}

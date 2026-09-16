@@ -1,0 +1,934 @@
+{
+  "view": "kisti-2608",
+  "view_manifest": {
+    "view_name": "kisti-2608",
+    "created_at": "2026-09-14T13:18:56+00:00",
+    "config": {
+      "cutoff": null,
+      "cutoff_rule": "none — 스냅샷 전체(meta.year IS NOT NULL). topic별 retrieval cutoff는 agent 정책(문헌 공개일 상한 < GT 최초 공개일; docs/asg/AGENT-HANDOFF.md §0, 2026-09-14)",
+      "universe": "kisti",
+      "universe_rule": "year≤cutoff ∧ ¬is_retracted ∧ title ∧ abstract≥50 ∧ (language='en' ∨ NULL) ∧ (CS topic ∨ arXiv cs.* category)",
+      "arxiv_cs_snapshot": {
+        "path": "/data2/chanjoong/survey-agent/survey-search/data/papers.duckdb",
+        "sha256": "0be1794e95a5b609e5a8d086a8a334ea9e6effef3dcf899164561ad6e9973b0a",
+        "arxiv_cs_ids": 748255
+      },
+      "exclude_all_candidates": false,
+      "exclude_keys": 40,
+      "exclude_keys_file": "exclude_keys.txt",
+      "include_keys_file": null,
+      "extra_parquet": null,
+      "id_convention": "arXiv base id for 10.48550/arxiv.* DOIs, else lowercase DOI (docs/asg/README.md §1.3 B)",
+      "arxiv_yymm_gate": null,
+      "title_leak_check": "selected GT titles (normalized; full / head / head+a survey variants) must not remain in view",
+      "note": "kisti-2608 (2026-09-14) = 시간 컷 없음: 스냅샷 260825 전체(year IS NOT NULL) ∧ universe kisti 규칙 − GT/twin 40키 + 제목 후검사; arXiv YYMM 게이트 없음. topic별 retrieval cutoff는 agent 정책(AutoSurvey data/topic_policy.*.jsonl retrieval_cutoff_at, 판정 upper_bound(공개일) < cutoff)"
+    },
+    "source": {
+      "package": "science_datalake_260825",
+      "paper_meta_sha256": "63324de065acd27be383ddebc730a20901e2dc4b0fd2be8e3b7319952ba7006c",
+      "paper_relations_sha256": "7634604b63cb300b7253d60b77339d398ac6e4f53d3595ec61427ab262edee76",
+      "paper_extras_sha256": "5d0ceb661e31af2191c995fa30e9986b50d3978c0ba87f676edb398acb72e384",
+      "body_store_sha256": "2dd893c35e507ea36b885a3f2cbaa454c0b24c95273fe64b6424453a679cedfa",
+      "sha256_source": "SHA256SUMS (패키지 동봉, 2026-09-03 VERIFY 276/277 OK)"
+    },
+    "counts": {
+      "anycs_within_cutoff": 1707597,
+      "universe": 1663714,
+      "universe_by_cs_source": {
+        "arxiv_cs": 67844,
+        "topic": 1383051,
+        "topic+arxiv_cs": 212819
+      },
+      "included_by_keys": 0,
+      "extra_records": 0,
+      "excluded_by_keys": 10,
+      "exclude_keys_present_in_kisti": 17,
+      "excluded_by_arxiv_yymm": 0,
+      "dedup_dropped": 0,
+      "view_papers": 1663704,
+      "arxiv_id_papers": 460772,
+      "by_added": {
+        "universe": 1663704
+      },
+      "by_cs_source": {
+        "arxiv_cs": 67843,
+        "topic": 1383047,
+        "topic+arxiv_cs": 212814
+      },
+      "by_year_2019plus": {
+        "2019": 120462,
+        "2020": 153283,
+        "2021": 169964,
+        "2022": 167027,
+        "2023": 148386,
+        "2024": 149508,
+        "2025": 141488,
+        "2026": 12005
+      },
+      "authors_rows": 6428653,
+      "venue_rows": 1501172,
+      "year_range": [
+        1922,
+        2026
+      ]
+    },
+    "excluded_present": [
+      {
+        "key": "10.1109/comst.2025.3648785",
+        "reason": "gt:network/wireless-foundation-models"
+      },
+      {
+        "key": "10.1109/comst.2026.3660854",
+        "reason": "gt:network/agentic-satellite-networks"
+      },
+      {
+        "key": "10.1109/comst.2026.3669216",
+        "reason": "gt:network/edge-cloud-collaboration"
+      },
+      {
+        "key": "10.1109/tkde.2026.3669747",
+        "reason": "gt:db/deep-graph-clustering"
+      },
+      {
+        "key": "10.1145/3777411",
+        "reason": "gt:ai/instruction-tuning-llms"
+      },
+      {
+        "key": "10.1145/3787849",
+        "reason": "gt:ai/model-merging"
+      },
+      {
+        "key": "10.1145/3789261",
+        "reason": "gt:ai/llm-agent-optimization"
+      },
+      {
+        "key": "10.1145/3793855",
+        "reason": "gt:db/negative-sampling-recsys"
+      },
+      {
+        "key": "10.1145/3794845",
+        "reason": "gt:systems/moe-inference-optimization"
+      },
+      {
+        "key": "10.1145/3796982",
+        "reason": "gt:ai/diffusion-model-alignment"
+      },
+      {
+        "key": "10.1145/3801957",
+        "reason": "gt:db/retrieval-explainability"
+      },
+      {
+        "key": "10.48550/arxiv.2211.01671",
+        "reason": "twin:2211.01671"
+      },
+      {
+        "key": "10.48550/arxiv.2212.07126",
+        "reason": "twin:2212.07126"
+      },
+      {
+        "key": "10.48550/arxiv.2310.10196",
+        "reason": "twin:2310.10196"
+      },
+      {
+        "key": "10.48550/arxiv.2406.02302",
+        "reason": "twin:2406.02302"
+      },
+      {
+        "key": "10.48550/arxiv.2409.18169",
+        "reason": "twin:2409.18169"
+      },
+      {
+        "key": "10.48550/arxiv.2507.16731",
+        "reason": "gt:systems/edge-slm-cloud-llm"
+      }
+    ],
+    "title_leak_hits": [],
+    "files_sha256": {
+      "papers.parquet": "c1a0c6b3fe1bd46f1a7d3d14832b53933dfb0b1c021531c23df109ba453ca156",
+      "paper_ids.parquet": "95095e720b408218ed018f1678021b82c9c698eac6da24d5172da5258d206f10",
+      "authors.parquet": "f77927156af6524a48561a769fbfb53b54b52f74921d1e3039dd6bac94426dd3",
+      "venue.parquet": "79e66e43428aae1d48af373c245fc45567ce7631ce6a55b04edc867d0d25b614"
+    },
+    "env": {
+      "python": "3.11.16",
+      "duckdb": "1.5.5"
+    }
+  },
+  "fulltext_source": "body_store.sqlite (science_datalake_260825, sha256 2dd893c35e507ea36b885a3f2cbaa454c0b24c95273fe64b6424453a679cedfa)",
+  "pools_file": "/data2/chanjoong/survey-agent/LLMxMapReduce-v2/data/kisti-2608/pools.jsonl",
+  "topics_file": "/data2/chanjoong/kisti_data/data/topics.kisti.jsonl",
+  "pool_mode": "gt_count",
+  "min_chars": 2000,
+  "max_chars": 250000,
+  "exclude_file": "/data2/chanjoong/kisti_data/data/views/kisti-2608/exclude_ids.txt",
+  "exclude_ids": [
+    "10.1007/s44336-026-00038-z",
+    "10.1109/comst.2025.3648785",
+    "10.1109/comst.2026.3660854",
+    "10.1109/comst.2026.3669216",
+    "10.1109/tkde.2026.3669747",
+    "10.1145/3773028",
+    "10.1145/3777411",
+    "10.1145/3779430",
+    "10.1145/3787849",
+    "10.1145/3788284",
+    "10.1145/3789261",
+    "10.1145/3793659",
+    "10.1145/3793855",
+    "10.1145/3794845",
+    "10.1145/3796982",
+    "10.1145/3801957",
+    "10.1145/3809166",
+    "10.1145/3811822",
+    "10.1145/3817114",
+    "10.1145/3821637",
+    "10.1145/3837074",
+    "10.1145/3838182",
+    "10.1145/3838593",
+    "10.18653/v1/2026.findings-acl.1916",
+    "2211.01671",
+    "2211.12875",
+    "2212.07126",
+    "2308.10792",
+    "2310.10196",
+    "2406.02302",
+    "2407.20018",
+    "2408.07666",
+    "2409.18169",
+    "2412.14219",
+    "2502.06872",
+    "2503.12434",
+    "2505.01821",
+    "2507.16731",
+    "2601.03181",
+    "2603.27918"
+  ],
+  "quota_field": "n_gt_refs_cutoff",
+  "topic_policy_file": "/data2/chanjoong/survey-agent/AutoSurvey/data/topic_policy.kisti-2608.jsonl",
+  "paper_dates": {
+    "created_at": "2026-09-14T13:26:03+00:00",
+    "by_precision": {
+      "month": 460772,
+      "day": 1198375,
+      "year": 4557
+    },
+    "view_papers_sha256": "c1a0c6b3fe1bd46f1a7d3d14832b53933dfb0b1c021531c23df109ba453ca156"
+  },
+  "topics": [
+    {
+      "title": "Instruction Tuning for Large Language Models",
+      "quota": 95,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 95,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 95,
+      "max_len": 81444,
+      "total_chars": 2853676,
+      "retrieval_policy": {
+        "topic_id": "instruction-tuning-llms",
+        "retrieval_cutoff_at": "2023-08-21",
+        "exclude_ids": [
+          "10.1145/3777411",
+          "2308.10792"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1304896,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 0.0
+    },
+    {
+      "title": "Function Calling in Large Language Models",
+      "quota": 74,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 74,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 74,
+      "max_len": 92026,
+      "total_chars": 2575706,
+      "retrieval_policy": {
+        "topic_id": "llm-function-calling",
+        "retrieval_cutoff_at": "2026-01-14",
+        "exclude_ids": [
+          "10.1145/3788284"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1654546,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 5.1
+    },
+    {
+      "title": "Model Merging in LLMs, MLLMs, and Beyond",
+      "quota": 139,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 139,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 139,
+      "max_len": 66784,
+      "total_chars": 4274741,
+      "retrieval_policy": {
+        "topic_id": "model-merging",
+        "retrieval_cutoff_at": "2024-08-14",
+        "exclude_ids": [
+          "10.1145/3787849",
+          "2408.07666"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1460094,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 8.6
+    },
+    {
+      "title": "Alignment of Diffusion Models",
+      "quota": 139,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 139,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 139,
+      "max_len": 187217,
+      "total_chars": 5500073,
+      "retrieval_policy": {
+        "topic_id": "diffusion-model-alignment",
+        "retrieval_cutoff_at": "2026-02-10",
+        "exclude_ids": [
+          "10.1145/3796982"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1663703,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 8.9
+    },
+    {
+      "title": "A Survey on the Optimization of Large Language Model-based Agents",
+      "quota": 102,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 102,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 102,
+      "max_len": 149339,
+      "total_chars": 3982194,
+      "retrieval_policy": {
+        "topic_id": "llm-agent-optimization",
+        "retrieval_cutoff_at": "2025-03-16",
+        "exclude_ids": [
+          "10.1145/3789261",
+          "2503.12434"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1540142,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 5.2
+    },
+    {
+      "title": "Explainability of Text Processing and Retrieval Methods",
+      "quota": 113,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 113,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 1,
+      "walked": 114,
+      "max_len": 87480,
+      "total_chars": 2906348,
+      "retrieval_policy": {
+        "topic_id": "retrieval-explainability",
+        "retrieval_cutoff_at": "2022-12-14",
+        "exclude_ids": [
+          "10.1145/3801957",
+          "2212.07126"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1202448,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 7.0
+    },
+    {
+      "title": "Trustworthy Retrieval-Augmented Generation",
+      "quota": 78,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 78,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 78,
+      "max_len": 81169,
+      "total_chars": 2647524,
+      "retrieval_policy": {
+        "topic_id": "trustworthy-rag",
+        "retrieval_cutoff_at": "2025-02-08",
+        "exclude_ids": [
+          "10.1145/3837074",
+          "2502.06872"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1528223,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 4.2
+    },
+    {
+      "title": "Large Models for Time Series and Spatio-Temporal Data",
+      "quota": 183,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 183,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 1,
+      "too_long": 1,
+      "walked": 185,
+      "max_len": 191065,
+      "total_chars": 8563313,
+      "retrieval_policy": {
+        "topic_id": "large-models-timeseries",
+        "retrieval_cutoff_at": "2023-10-16",
+        "exclude_ids": [
+          "10.1145/3821637",
+          "2310.10196"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1326717,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 19.9
+    },
+    {
+      "title": "Deep Graph Clustering",
+      "quota": 83,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 83,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 83,
+      "max_len": 80100,
+      "total_chars": 2605219,
+      "retrieval_policy": {
+        "topic_id": "deep-graph-clustering",
+        "retrieval_cutoff_at": "2022-11-23",
+        "exclude_ids": [
+          "10.1109/tkde.2026.3669747",
+          "2211.12875"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1191055,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 16.4
+    },
+    {
+      "title": "Negative Sampling in Recommendation",
+      "quota": 138,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 138,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 138,
+      "max_len": 146366,
+      "total_chars": 5035895,
+      "retrieval_policy": {
+        "topic_id": "negative-sampling-recsys",
+        "retrieval_cutoff_at": "2026-01-28",
+        "exclude_ids": [
+          "10.1145/3793855"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1657045,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 7.8
+    },
+    {
+      "title": "Adversarial Attacks on Multimodal Large Language Models",
+      "quota": 52,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 52,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 52,
+      "max_len": 101998,
+      "total_chars": 1933359,
+      "retrieval_policy": {
+        "topic_id": "mllm-adversarial-attacks",
+        "retrieval_cutoff_at": "2026-03-30",
+        "exclude_ids": [
+          "2603.27918"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1663703,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 3.0
+    },
+    {
+      "title": "Detecting Training Data For Large Language Models",
+      "quota": 56,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 56,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 56,
+      "max_len": 85889,
+      "total_chars": 1832269,
+      "retrieval_policy": {
+        "topic_id": "llm-training-data-detection",
+        "retrieval_cutoff_at": "2026-01-07",
+        "exclude_ids": [
+          "10.1145/3779430"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1653071,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 3.1
+    },
+    {
+      "title": "Visual Adversarial Attacks and Defenses in the Physical World",
+      "quota": 128,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 128,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 1,
+      "walked": 129,
+      "max_len": 114778,
+      "total_chars": 4415799,
+      "retrieval_policy": {
+        "topic_id": "physical-adversarial-attacks",
+        "retrieval_cutoff_at": "2022-11-03",
+        "exclude_ids": [
+          "10.1145/3793659",
+          "2211.01671"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1186466,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 7.4
+    },
+    {
+      "title": "Harmful Fine-tuning Attacks and Defenses for Large Language Models",
+      "quota": 84,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 84,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 84,
+      "max_len": 85895,
+      "total_chars": 3108885,
+      "retrieval_policy": {
+        "topic_id": "harmful-finetuning",
+        "retrieval_cutoff_at": "2024-09-26",
+        "exclude_ids": [
+          "10.1145/3817114",
+          "2409.18169"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1472911,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 4.1
+    },
+    {
+      "title": "Securing Large Language Models",
+      "quota": 44,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 44,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 44,
+      "max_len": 86018,
+      "total_chars": 1665326,
+      "retrieval_policy": {
+        "topic_id": "llm-watermarking",
+        "retrieval_cutoff_at": "2025-12-05",
+        "exclude_ids": [
+          "10.1145/3773028"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1641322,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 2.0
+    },
+    {
+      "title": "A Survey on Inference Optimization Techniques for Mixture of Experts Models",
+      "quota": 111,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 111,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 111,
+      "max_len": 123821,
+      "total_chars": 4442104,
+      "retrieval_policy": {
+        "topic_id": "moe-inference-optimization",
+        "retrieval_cutoff_at": "2024-12-18",
+        "exclude_ids": [
+          "10.1145/3794845",
+          "2412.14219"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1503417,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 6.2
+    },
+    {
+      "title": "Towards Efficient Large Language Model Serving",
+      "quota": 61,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 61,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 61,
+      "max_len": 145986,
+      "total_chars": 2196842,
+      "retrieval_policy": {
+        "topic_id": "kv-cache-serving",
+        "retrieval_cutoff_at": "2026-07-01",
+        "exclude_ids": [
+          "10.18653/v1/2026.findings-acl.1916"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1663704,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 2.3
+    },
+    {
+      "title": "Collaborative Inference between Edge SLMs and Cloud LLMs",
+      "quota": 134,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 134,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 134,
+      "max_len": 158063,
+      "total_chars": 5514511,
+      "retrieval_policy": {
+        "topic_id": "edge-slm-cloud-llm",
+        "retrieval_cutoff_at": "2025-07-22",
+        "exclude_ids": [
+          "10.1145/3838593",
+          "2507.16731"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1591193,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 7.5
+    },
+    {
+      "title": "Network Edge Inference for Large Language Models",
+      "quota": 85,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 85,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 85,
+      "max_len": 67843,
+      "total_chars": 3019044,
+      "retrieval_policy": {
+        "topic_id": "llm-edge-inference",
+        "retrieval_cutoff_at": "2026-04-24",
+        "exclude_ids": [
+          "10.1145/3809166"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1663704,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 3.6
+    },
+    {
+      "title": "Efficient training of large language models on distributed infrastructures",
+      "quota": 165,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 165,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 1,
+      "too_long": 0,
+      "walked": 166,
+      "max_len": 184629,
+      "total_chars": 6089343,
+      "retrieval_policy": {
+        "topic_id": "llm-distributed-training",
+        "retrieval_cutoff_at": "2024-07-29",
+        "exclude_ids": [
+          "10.1007/s44336-026-00038-z",
+          "2407.20018"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1451432,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 7.4
+    },
+    {
+      "title": "Edge-Cloud Collaborative Computing on Distributed Intelligence and Model Optimization",
+      "quota": 167,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 167,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 167,
+      "max_len": 159142,
+      "total_chars": 6873994,
+      "retrieval_policy": {
+        "topic_id": "edge-cloud-collaboration",
+        "retrieval_cutoff_at": "2025-05-03",
+        "exclude_ids": [
+          "10.1109/comst.2026.3669216",
+          "2505.01821"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1561520,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 6.6
+    },
+    {
+      "title": "Multi-Modal Data-Enhanced Foundation Models for Prediction and Control in Wireless Networks",
+      "quota": 119,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 119,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 119,
+      "max_len": 104984,
+      "total_chars": 4431263,
+      "retrieval_policy": {
+        "topic_id": "wireless-foundation-models",
+        "retrieval_cutoff_at": "2025-12-26",
+        "exclude_ids": [
+          "10.1109/comst.2025.3648785",
+          "2601.03181"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1643688,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 6.0
+    },
+    {
+      "title": "AI Reasoning for Wireless Communications and Networking",
+      "quota": 72,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 72,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 72,
+      "max_len": 173823,
+      "total_chars": 3077336,
+      "retrieval_policy": {
+        "topic_id": "ai-wireless-reasoning",
+        "retrieval_cutoff_at": "2026-04-23",
+        "exclude_ids": [
+          "10.1145/3811822"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1663704,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 3.8
+    },
+    {
+      "title": "Agentic Satellite-Augmented Low-Altitude Economy and Terrestrial Networks",
+      "quota": 66,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 66,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 66,
+      "max_len": 85679,
+      "total_chars": 2523172,
+      "retrieval_policy": {
+        "topic_id": "agentic-satellite-networks",
+        "retrieval_cutoff_at": "2026-02-03",
+        "exclude_ids": [
+          "10.1109/comst.2026.3660854"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1663703,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 3.6
+    },
+    {
+      "title": "Towards AI-Assisted Sustainable Adaptive Video Streaming Systems",
+      "quota": 71,
+      "quota_field": "n_gt_refs_cutoff",
+      "resolved": 71,
+      "excluded": 0,
+      "missing_meta": 0,
+      "no_body": 0,
+      "too_short": 0,
+      "too_long": 0,
+      "walked": 71,
+      "max_len": 78501,
+      "total_chars": 2770466,
+      "retrieval_policy": {
+        "topic_id": "ai-video-streaming",
+        "retrieval_cutoff_at": "2024-06-04",
+        "exclude_ids": [
+          "10.1145/3838182",
+          "2406.02302"
+        ],
+        "pool_in": 1200,
+        "pool_allowed": 1200,
+        "blocked_after_cutoff": 0,
+        "blocked_no_date": 0,
+        "allowed_total": 1431447,
+        "rule": "upper_bound(record date) < cutoff ∧ id ∉ exclude_ids"
+      },
+      "seconds": 3.5
+    }
+  ]
+}

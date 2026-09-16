@@ -1,0 +1,15 @@
+{
+  "exclude_keys_file": "/data2/chanjoong/kisti_data/data/views/kisti-2608/exclude_keys.txt",
+  "exclude_keys": 40,
+  "search_terms": 40,
+  "titles": 30,
+  "files": {
+    "input": {
+      "path": "data/kisti-2608/input.jsonl",
+      "records": 25,
+      "hits": []
+    }
+  },
+  "hard_hits": 0,
+  "mentions": 0
+}
