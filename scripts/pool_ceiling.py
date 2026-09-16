@@ -5,12 +5,14 @@
   input_ceiling = |Stage 2 입력(quota 편) ∩ GT(view 안)| / |GT(view 안)|   (--input 지정 시)
 
 GT(view 안)은 kisti_data/candidates/gap_to_80_refs.jsonl 의 tier == in_view 행 (인수인계 §5 분모).
-매칭 키는 view id (id 규칙 B: arXiv base id 또는 소문자 DOI).
+2026-09-14 규약부터 이 파일은 topic 별 cutoff 로 재계산돼 있고(계층 in_view_blocked·undated 추가) tier == in_view 편수가
+topics.jsonl 의 n_gt_refs_cutoff 와 같아야 한다 — 다르면 topics/gt_refs 가 서로 다른 view 기준이므로 경고한다.
+매칭 키는 view id (행의 view_id, 없으면 kisti_doi/doi 를 id 규칙 B 로 변환: arXiv base id 또는 소문자 DOI).
 
 사용:
-  python scripts/pool_ceiling.py --pools data/kisti-2512/pools.jsonl \
-      --topics $KISTI_DATA_ROOT/data/topics.kisti.jsonl [--input data/kisti-2512/input.jsonl] \
-      [--gt_refs $KISTI_DATA_ROOT/candidates/gap_to_80_refs.jsonl] [--out data/kisti-2512/pool_ceiling.json]
+  python scripts/pool_ceiling.py --pools data/kisti-2608/pools.jsonl \
+      --topics $KISTI_DATA_ROOT/data/topics.kisti.jsonl [--input data/kisti-2608/input.jsonl] \
+      [--gt_refs $KISTI_DATA_ROOT/candidates/gap_to_80_refs.jsonl] [--out data/kisti-2608/pool_ceiling.json]
 """
 from __future__ import annotations
 
@@ -31,10 +33,13 @@ def gt_ids_by_slug(gt_refs, tier="in_view") -> dict[str, set[str]]:
     for r in gt_refs:
         if r.get("tier") != tier:
             continue
-        doi = r.get("kisti_doi") or r.get("doi")
-        if not doi:
-            continue
-        out.setdefault(r["slug"], set()).add(doi_to_id(doi))
+        vid = r.get("view_id")
+        if not vid:
+            doi = r.get("kisti_doi") or r.get("doi")
+            if not doi:
+                continue
+            vid = doi_to_id(doi)
+        out.setdefault(r["slug"], set()).add(str(vid).strip())
     return out
 
 
@@ -50,8 +55,11 @@ def compute_ceilings(topics, pools, gt_refs, inputs=None) -> dict:
         gt_ids = gt.get(slug, set())
         pool_ids = pool_by_title.get(title)
         row = {"title": title, "slug": slug, "n_gt_refs": t.get("n_gt_refs"),
+               "n_gt_refs_cutoff": t.get("n_gt_refs_cutoff"), "retrieval_cutoff_at": t.get("retrieval_cutoff_at"),
                "n_gt_in_view": len(gt_ids), "pool_size": None, "pool_hits": None, "pool_ceiling": None,
                "input_size": None, "input_hits": None, "input_ceiling": None}
+        if t.get("n_gt_refs_cutoff") is not None and t["n_gt_refs_cutoff"] != len(gt_ids):
+            row["denominator_mismatch"] = f"topics n_gt_refs_cutoff={t['n_gt_refs_cutoff']} ≠ gt_refs in_view={len(gt_ids)}"
         if pool_ids is not None:
             hits = gt_ids & pool_ids
             row.update(pool_size=len(pool_ids), pool_hits=len(hits),
@@ -68,7 +76,8 @@ def compute_ceilings(topics, pools, gt_refs, inputs=None) -> dict:
         return round(sum(vals) / len(vals), 4) if vals else None
 
     return {"topics": rows, "mean_pool_ceiling": mean("pool_ceiling"),
-            "mean_input_ceiling": mean("input_ceiling"), "n_topics": len(rows)}
+            "mean_input_ceiling": mean("input_ceiling"), "n_topics": len(rows),
+            "denominator_mismatches": sum(1 for r in rows if r.get("denominator_mismatch"))}
 
 
 def main():
@@ -86,13 +95,15 @@ def main():
     inputs = list(iter_jsonl(args.input)) if args.input else None
     res = compute_ceilings(topics, pools, gt_refs, inputs)
 
-    print(f"{'slug':34} {'gt_in_view':>10} {'pool_hits':>9} {'pool_ceil':>9} {'in_hits':>7} {'in_ceil':>7}")
+    print(f"{'slug':30} {'cutoff':>10} {'gt_in_view':>10} {'pool_hits':>9} {'pool_ceil':>9} {'in_hits':>7} {'in_ceil':>7}")
     for r in res["topics"]:
         pc = "-" if r["pool_ceiling"] is None else f"{r['pool_ceiling']:.2%}"
         ic = "-" if r["input_ceiling"] is None else f"{r['input_ceiling']:.2%}"
-        print(f"{r['slug'][:34]:34} {r['n_gt_in_view']:>10} {str(r['pool_hits']):>9} {pc:>9} "
-              f"{str(r['input_hits']):>7} {ic:>7}")
-    print(f"mean pool_ceiling={res['mean_pool_ceiling']}  mean input_ceiling={res['mean_input_ceiling']}")
+        flag = "  ⚠ " + r["denominator_mismatch"] if r.get("denominator_mismatch") else ""
+        print(f"{r['slug'][:30]:30} {str(r.get('retrieval_cutoff_at') or '-'):>10} {r['n_gt_in_view']:>10} "
+              f"{str(r['pool_hits']):>9} {pc:>9} {str(r['input_hits']):>7} {ic:>7}{flag}")
+    print(f"mean pool_ceiling={res['mean_pool_ceiling']}  mean input_ceiling={res['mean_input_ceiling']}  "
+          f"denominator mismatches={res['denominator_mismatches']}")
     if args.out:
         os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
         with open(args.out, "w") as f:

@@ -15,5 +15,8 @@ PYTHONPATH=LLMxMapReduce_V2 /data2/chanjoong/miniforge3/envs/llmxmr/bin/python -
 | `test_leak_check.py` | `scripts/leak_check.py` — GT DOI·twin id·제목 누수 탐지, candidate.yaml/README 로더 | |
 | `test_run_manifest.py` | `scripts/run_manifest.py` — 로그 집계(호출·비용·completion_tokens 분포·잘림·fallback), topic 통계 | |
 | `test_build_corpus_input_kisti.py` | `kisti_data/adapter/llmxmapreduce/build_corpus_input_kisti.py` — `select_papers` 게이트(min/max_chars, no_body, quota) | FullText mock. adapter 가 없으면 skip |
+| `test_retrieve_pool.py` | `scripts/retrieve_pool.py` — topic 마다 `set_policy` 호출·허용 집합 안 검색·누수 게이트·정책 블록 | 가짜 DB·정책 모듈. faiss 불필요 |
+| `test_ref_time_check.py` | `scripts/ref_time_check.py` — 시간 범위 위반 / 제외 id / corpus 밖(허위 후보) / 목록 밖 ref 판정, cited·listed 구분 | 날짜 규칙은 `kisti_data/adapter/common/retrieval_policy.py`, 없으면 skip |
+| `test_pseudo_survey_e2e.py` | **가짜 Survey end-to-end**: 임베드한 예시 corpus·정책·GT ref 로 Stage 1(가짜 DB) → Stage 2(`select_papers`, 가짜 원문) → pseudo 출력(본문 `[n]` 인용·References·가짜 로그) → `leak_check`·`ref_time_check`·`pool_ceiling`·`run_manifest.main()` 을 임시 디렉터리 파일로 연결. 오염된 출력(cutoff 이후 논문·허위 ref·GT 본체)이 잡히는지 포함 | adapter + `../AutoSurvey/src/retrieval_policy.py` 필요, 없으면 skip |
 
 원칙: 파이프라인(src/)은 건드리지 않으므로 테스트도 그 바깥(요청 래퍼·입력 빌더·기록 스크립트)만 다룬다.

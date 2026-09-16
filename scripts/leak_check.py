@@ -5,8 +5,9 @@
   --input  : Stage 2 input.jsonl  (papers[].arxiv_id / url / title)
   --output : Stage 3 output.jsonl (content, ref_str, outline, papers[])
 검사 키
-  --exclude_keys : view 의 exclude_keys.txt (DOI 형식 38개 = GT 본체 25 + twin 15). 각 키에서
-                   DOI 문자열과 (arXiv 면) base id 를 검색어로 만든다.
+  --exclude_keys : view 의 exclude_keys.txt (DOI 형식 40개 = GT 본체 25 + twin 15). 각 키에서
+                   DOI 문자열과 (arXiv 면) base id 를 검색어로 만든다. 기본 경로는 $KISTI_VIEW(기본 kisti-2512) —
+                   kisti-2608 실행은 KISTI_VIEW=kisti-2608 이거나 --exclude_keys 를 명시할 것.
   --candidates_dir : candidates/<domain>/<slug>/candidate.yaml 의 gt.title (GT 제목)
   --twin_readme    : candidates/README.md §4 표의 `| twin:<id> | ... | <제목> |` 행 (twin 제목, 70자 절단)
 판정
@@ -27,6 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from kisti_common import doi_to_id, is_arxiv_id, iter_jsonl, norm_title  # noqa: E402
 
 KISTI_ROOT = Path(os.environ.get("KISTI_DATA_ROOT", "/data2/chanjoong/kisti_data"))
+KISTI_VIEW = os.environ.get("KISTI_VIEW", "kisti-2512")   # 기본값은 run_stages.sh 와 같다 — 새 view 는 KISTI_VIEW 또는 --exclude_keys 로
 _TWIN_ROW = re.compile(r"^\|\s*twin:(\S+)\s*\|[^|]*\|[^|]*\|\s*(.*?)\s*\|\s*$")
 
 
@@ -117,7 +119,8 @@ def main():
     ap.add_argument("--input")
     ap.add_argument("--output")
     ap.add_argument("--topics", default=str(KISTI_ROOT / "data/topics.kisti.jsonl"))
-    ap.add_argument("--exclude_keys", default=str(KISTI_ROOT / "data/views/kisti-2512/exclude_keys.txt"))
+    ap.add_argument("--exclude_keys", default=str(KISTI_ROOT / f"data/views/{KISTI_VIEW}/exclude_keys.txt"),
+                    help="view 의 exclude_keys.txt (기본 $KISTI_VIEW, 없으면 kisti-2512)")
     ap.add_argument("--candidates_dir", default=str(KISTI_ROOT / "candidates"))
     ap.add_argument("--twin_readme", default=str(KISTI_ROOT / "candidates/README.md"))
     ap.add_argument("--out")
@@ -131,7 +134,8 @@ def main():
     titles = {f"gt:{s}": t for s, t in load_gt_titles(args.candidates_dir, topics).items()}
     titles.update({f"twin:{i}": t for i, t in load_twin_titles(args.twin_readme).items()})
 
-    report = {"exclude_keys": len(keys), "search_terms": len(terms), "titles": len(titles), "files": {}}
+    report = {"exclude_keys_file": args.exclude_keys, "exclude_keys": len(keys), "search_terms": len(terms),
+              "titles": len(titles), "files": {}}
     all_hits = []
     for label, path in (("input", args.input), ("output", args.output)):
         if not path:

@@ -82,5 +82,42 @@ class PerTopicTest(unittest.TestCase):
         self.assertEqual(rm.collect_models(cfg), ["m1", "m2"])
 
 
+class PolicyBlockTest(unittest.TestCase):
+    S1 = {"topic_id": "t", "retrieval_cutoff_at": "2023-08-21", "gt_first_public_at": "2023-08-21",
+          "gt_first_public_source": "arxiv v1", "exclude_ids": ["a"], "corpus_snapshot_id": "snap", "status": "ok",
+          "index_total": 100, "allowed": 70, "allowed_fingerprint_sha256": "f" * 64,
+          "excluded": {"excluded_id": 1}, "allowed_date_source": {"sidecar": 70}, "exclude_ids_present_in_index": []}
+    S2 = {"topic_id": "t", "retrieval_cutoff_at": "2023-08-21", "exclude_ids": ["a"], "pool_in": 10, "pool_allowed": 10,
+          "blocked_after_cutoff": 0, "blocked_no_date": 0, "allowed_total": 70}
+
+    def test_merge_both_stages(self):
+        m = rm.merge_policy(self.S1, self.S2)
+        self.assertEqual(m["retrieval_cutoff_at"], "2023-08-21")
+        self.assertEqual(m["stage1"]["allowed"], 70)
+        self.assertEqual(m["stage1"]["allowed_fingerprint_sha256"], "f" * 64)
+        self.assertEqual(m["stage2"]["blocked_after_cutoff"], 0)
+        self.assertNotIn("stage1_leak", m)
+        self.assertNotIn("allowed_mismatch", m)
+
+    def test_stage2_blocked_flags_stage1_leak(self):
+        m = rm.merge_policy(None, {**self.S2, "blocked_after_cutoff": 999, "allowed_total": 70})
+        self.assertIsNone(m["stage1"])
+        self.assertIn("999", m["stage1_leak"])
+        m2 = rm.merge_policy({**self.S1, "allowed": 69}, self.S2)
+        self.assertIn("allowed_mismatch", m2)
+
+    def test_none_when_no_policy(self):
+        self.assertIsNone(rm.merge_policy(None, None))
+
+    def test_corpus_version(self):
+        vm = {"view_name": "kisti-2608", "created_at": "2026-09-14T13:18:56+00:00",
+              "files_sha256": {"papers.parquet": "c1a0c6b3fe1bd46f1a7d3d14832b53933dfb0b1c021531c23df109ba453ca156"},
+              "config": {"cutoff_rule": "없음"}}
+        cv = rm.corpus_version(vm)
+        self.assertEqual(cv["short"], "c1a0c6b3")
+        self.assertEqual(cv["version"], "c1a0c6b3 / 2026-09-14T13:18:56+00:00")
+        self.assertIsNone(rm.corpus_version(None))
+
+
 if __name__ == "__main__":
     unittest.main()
