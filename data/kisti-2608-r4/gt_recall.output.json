@@ -1,0 +1,34 @@
+{
+  "topics": [
+    {
+      "title": "A Survey on the Optimization of Large Language Model-based Agents",
+      "slug": "llm-agent-optimization",
+      "denominator": 190,
+      "denominator_field": "n_gt_refs_cutoff",
+      "n_gt_refs_cutoff_view": "kisti-2608-r4 32a77a48",
+      "gt_unique_in_view": 190,
+      "n_papers": 190,
+      "n_refs_cited": 49,
+      "gt_hits_cited": 12,
+      "gt_hits_listed": 31,
+      "recall": 0.0632,
+      "precision": 0.2449,
+      "gt_hits_cited_ids": [
+        "10.1007/s10515-025-00544-2",
+        "10.52202/075280-2338",
+        "2308.03427",
+        "2308.03688",
+        "2309.03409",
+        "2402.11651",
+        "2403.12881",
+        "2408.07199",
+        "2408.13296",
+        "2409.02977",
+        "2502.02533",
+        "2503.02682"
+      ]
+    }
+  ],
+  "topics_file": "/data2/chanjoong/kisti_data/data/topics.kisti.jsonl",
+  "gt_refs_file": "/data2/chanjoong/kisti_data/candidates/gap_to_80_refs.jsonl"
+}

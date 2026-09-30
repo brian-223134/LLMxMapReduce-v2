@@ -28,6 +28,10 @@ nohup.out
 # 추가 제외 목록·ceiling·manifest·누수 검사 결과(json)만 추적한다.
 data/kisti-2512/*.jsonl
 data/kisti-2608/*.jsonl
+data/kisti-2608-r4/*.jsonl
+!data/kisti-2608-r4/topics.poc.jsonl
+data/kisti-2608-r4/tex/*
+!data/kisti-2608-r4/tex/*.pdf
 data/*.nohup.log
 *.pid
 !data/kisti-2512/exclude_extra.txt

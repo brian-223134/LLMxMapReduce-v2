@@ -1,0 +1,78 @@
+{
+  "created_at": "2026-09-30T04:20:38+00:00",
+  "db_path": "/data2/chanjoong/survey-agent/AutoSurvey/database_kisti-kisti-2608-r4",
+  "embedding_model": "nomic-ai/nomic-embed-text-v1",
+  "retrieve_num": 1200,
+  "index_total": 1697512,
+  "corpus_export_manifest": {
+    "format": "autosurvey",
+    "created_at": "2026-09-30T02:12:24+00:00",
+    "records": 1697512,
+    "view": {
+      "name": "kisti-2608-r4",
+      "files_sha256": {
+        "papers.parquet": "32a77a486c2c750182fb48a44c6bb5c04e46af15e7eae3407465ea1e418816cc",
+        "paper_ids.parquet": "4de1b1392cca5b74cec8a30d7a3979cf7e7d8b401c0de9290f50cbf3a4337102",
+        "authors.parquet": "e4507c044b26d7f21de31625607d253c32c798c86444f6ec9f72465a77b5d033",
+        "venue.parquet": "301d8343072251022afad14caad30466be202417b47332b853a747cb584111ae"
+      }
+    },
+    "content_sha256": "eaf5c3a048a99776910abf416049f6e4a6e5035110f994f4c293502be4c297fc"
+  },
+  "sidecar": {
+    "created_at": "2026-09-30T02:11:54+00:00",
+    "builder": "adapter/common/paper_dates.py",
+    "view": "kisti-2608-r4",
+    "view_dir": "/data2/chanjoong/kisti_data/data/views/kisti-2608-r4.building",
+    "view_papers_sha256": "32a77a486c2c750182fb48a44c6bb5c04e46af15e7eae3407465ea1e418816cc",
+    "view_created_at": "2026-09-30T02:05:49+00:00",
+    "records": 1697512,
+    "dated": 1697512,
+    "by_precision": {
+      "month": 462193,
+      "day": 1230756,
+      "year": 4563
+    },
+    "by_source": {
+      "arxiv_id": 460763,
+      "kisti_year": 4563,
+      "openalex_year_conflict": 4563,
+      "openalex_day": 1198454,
+      "overlay_published_at": 33732
+    },
+    "openalex": {
+      "path": "/data2/chanjoong/survey-agent/asg-common-corpus/data/upstream/cd87dd0/openalex/works/works.parquet",
+      "size": 134752212966,
+      "mtime": "2026-08-27T10:11:09+00:00",
+      "matched": 1203310
+    },
+    "overlay": {
+      "rows": 38354,
+      "with_published_at": 38240,
+      "invalid": 0,
+      "path": "/data2/chanjoong/kisti_data/data/overlay/snapshots/040104/overlay.parquet",
+      "sha256": "6249a44e1d6771973c1c38fcff0ab13c06ea7da958a3c6060dd2cfbd58fa66a8",
+      "applied": 33732,
+      "not_in_view": 4508,
+      "replaced_by_source": {
+        "openalex_day": 293,
+        "kisti_year": 41,
+        "arxiv_id": 33398
+      },
+      "by_precision": {
+        "day": 32302,
+        "month": 1430
+      }
+    },
+    "rule": "arXiv id → YYMM(month); DOI → OpenAlex publication_date(day, 연도≥KISTI year 일 때) else KISTI year; overlay published_at 이 있으면 그것이 최우선(문자열 길이 = 정밀도)",
+    "precision_rule": "문자열 길이 = 정밀도 (YYYY | YYYY-MM | YYYY-MM-DD); 판정 upper_bound(date) < retrieval_cutoff_at"
+  },
+  "topics_file": "/data2/chanjoong/survey-agent/LLMxMapReduce-v2/data/kisti-2608-r4/topics.poc.jsonl",
+  "topics_sha256": "6717c96fefe733268ad4fa6e4a600fc44f971d9881eb5e26936abf8dd68b7df9",
+  "exclude_file": "/data2/chanjoong/kisti_data/data/views/kisti-2608-r4/exclude_ids.txt",
+  "topic_policy_file": "/data2/chanjoong/survey-agent/AutoSurvey/data/topic_policy.kisti-2608-r4.jsonl",
+  "topic_policy_sha256": "f4abd3febbe79c48d4c53322f292c125c1c58243b846fabd08e3ad2927c4c89c",
+  "topic_id_field": "slug",
+  "rule": "검색은 허용 집합(upper_bound(공개일) < retrieval_cutoff_at ∧ id ∉ exclude_ids) 안에서 FAISS IDSelectorBitmap 으로 수행",
+  "n_topics": 1
+}

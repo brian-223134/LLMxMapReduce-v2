@@ -1,0 +1,64 @@
+{
+  "view": "kisti-2608-r4",
+  "paper_dates": "/data2/chanjoong/kisti_data/data/views/kisti-2608-r4/paper_dates.json",
+  "sidecar": {
+    "created_at": "2026-09-30T02:11:54+00:00",
+    "view_papers_sha256": "32a77a486c2c750182fb48a44c6bb5c04e46af15e7eae3407465ea1e418816cc",
+    "records": 1697512,
+    "by_precision": {
+      "month": 462193,
+      "day": 1230756,
+      "year": 4563
+    }
+  },
+  "topic_policy_file": "/data2/chanjoong/survey-agent/AutoSurvey/data/topic_policy.kisti-2608-r4.jsonl",
+  "rule": "upper_bound(sidecar 공개일) < retrieval_cutoff_at ∧ id ∉ exclude_ids; 결과 원본은 수정하지 않음",
+  "files": {
+    "output": {
+      "path": "data/kisti-2608-r4/output.jsonl",
+      "records": 1,
+      "topics": [
+        {
+          "title": "A Survey on the Optimization of Large Language Model-based Agents",
+          "topic_id": "llm-agent-optimization",
+          "retrieval_cutoff_at": "2025-03-16",
+          "policy": "topic_cutoff",
+          "n_papers": 190,
+          "n_ref_lines": 190,
+          "n_cited": 49,
+          "listed": {
+            "allowed": 190,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "cited": {
+            "allowed": 49,
+            "time_violation": 0,
+            "excluded_id": 0,
+            "no_date": 0,
+            "not_in_corpus": 0
+          },
+          "unlisted_refs": 0,
+          "ref_url_mismatch": [],
+          "cited_out_of_range": [],
+          "problems": []
+        }
+      ]
+    }
+  },
+  "totals": {
+    "output.cited.allowed": 49,
+    "output.listed.allowed": 190,
+    "output.cited.time_violation": 0,
+    "output.listed.time_violation": 0,
+    "output.cited.excluded_id": 0,
+    "output.listed.excluded_id": 0,
+    "output.cited.no_date": 0,
+    "output.listed.no_date": 0,
+    "output.cited.not_in_corpus": 0,
+    "output.listed.not_in_corpus": 0,
+    "output.unlisted_refs": 0
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "exclude_keys_file": "/data2/chanjoong/kisti_data/data/views/kisti-2608-r4/exclude_keys.txt",
+  "exclude_keys": 43,
+  "search_terms": 43,
+  "titles": 30,
+  "files": {
+    "output": {
+      "path": "data/kisti-2608-r4/output.jsonl",
+      "records": 1,
+      "hits": [
+        {
+          "title": "A Survey on the Optimization of Large Language Model-based Agents",
+          "kind": "title_mention",
+          "term": "gt:llm-agent-optimization",
+          "where": "content"
+        },
+        {
+          "title": "A Survey on the Optimization of Large Language Model-based Agents",
+          "kind": "title_mention",
+          "term": "gt:llm-agent-optimization",
+          "where": "outline"
+        }
+      ]
+    }
+  },
+  "hard_hits": 0,
+  "mentions": 2
+}
