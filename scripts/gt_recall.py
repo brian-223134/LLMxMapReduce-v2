@@ -31,12 +31,13 @@ from kisti_common import cited_indices, iter_jsonl  # noqa: E402
 KISTI_ROOT = Path(os.environ.get("KISTI_DATA_ROOT", "/data2/chanjoong/kisti_data"))
 
 
-def score_record(rec, gt: set[str], denom: int, post: set[str] | None = None) -> dict:
+def score_record(rec, gt: set[str], denom: int, post: set[str] | None = None, alt: dict[str, str] | None = None) -> dict:
     papers = rec.get("papers") or []
     content = rec.get("content") or ""
-    cited = {str(papers[i - 1].get("arxiv_id")).lower()
-             for i in cited_indices(content) if 1 <= i <= len(papers)}
-    listed = {str(p.get("arxiv_id")).lower() for p in papers}
+    alt = alt or {}         # 같은 S2 논문의 다른 판 → 그 ref 의 view_id. 어느 판을 인용해도 그 ref 한 편의 hit 다
+    canon = lambda p: (lambda x: alt.get(x, x))(str(p.get("arxiv_id")).lower())  # noqa: E731
+    cited = {canon(papers[i - 1]) for i in cited_indices(content) if 1 <= i <= len(papers)}
+    listed = {canon(p) for p in papers}
     hit = cited & gt
     post = post or set()
     hit_post = cited & post
@@ -58,8 +59,10 @@ def main():
     args = ap.parse_args()
 
     topics = {t["title"]: t for t in iter_jsonl(args.topics)}
-    gt, post = defaultdict(set), defaultdict(set)
+    gt, post, alt = defaultdict(set), defaultdict(set), defaultdict(dict)
     for r in iter_jsonl(args.gt_refs):
+        if r.get("view_id"):
+            alt[r["slug"]].update({str(a).lower(): r["view_id"].lower() for a in r.get("alt_view_ids") or []})
         if r.get("tier") == "in_view" and r.get("view_id"):
             gt[r["slug"]].add(r["view_id"].lower())
         elif r.get("tier") == "post" and r.get("view_id"):
@@ -75,7 +78,7 @@ def main():
         row = {"title": t["title"], "slug": t["slug"], "denominator": denom,
                "denominator_field": "n_gt_refs_cutoff", "n_gt_refs_cutoff_view": t.get("n_gt_refs_cutoff_view"),
                "gt_unique_in_view": len(gt[t["slug"]]), "n_gt_refs_post": t.get("n_gt_refs_post"),
-               **score_record(rec, gt[t["slug"]], denom, post[t["slug"]])}
+               **score_record(rec, gt[t["slug"]], denom, post[t["slug"]], alt[t["slug"]])}
         if row["gt_unique_in_view"] != denom:
             print(f"⚠ {t['slug']}: n_gt_refs_cutoff={denom} ≠ gt_refs in_view={row['gt_unique_in_view']}", file=sys.stderr)
         rows.append(row)
