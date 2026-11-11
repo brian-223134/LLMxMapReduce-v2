@@ -1,5 +1,5 @@
 import os
-from openai import OpenAI, InternalServerError, RateLimitError, APIError
+from openai import OpenAI, InternalServerError, RateLimitError, APIError, BadRequestError
 from tenacity import (
     retry,
     stop_after_attempt,
@@ -29,12 +29,44 @@ class TruncatedResponseError(ValueError):
     """
 
 
+class DataInspectionFailedError(RuntimeError):
+    """Alibaba DashScope rejected the call with 400 `data_inspection_failed`
+    (content moderation on the input or the output).
+
+    Deliberately NOT a ValueError and NOT an openai.APIError: neither the
+    wrapper retry (429/5xx/APIError) nor the module-level retries (ValueError,
+    ...) catch it, so the same prompt is not re-sent 100x and no module shrinks
+    or rewrites the input to get past the filter. The call fails, the log gets
+    one `data_inspection_failed` ERROR line, and the run must be reported as is.
+    """
+
+
+def _is_data_inspection_failed(exc):
+    code = getattr(exc, "code", None)
+    body = getattr(exc, "body", None)
+    if code is None and isinstance(body, dict):
+        code = body.get("code") or (body.get("error") or {}).get("code")
+    return code == "data_inspection_failed" or "data_inspection_failed" in str(exc)
+
+
+def _env_price(name):
+    value = os.environ.get(name)
+    return float(value) if value not in (None, "") else None
+
+
 class OpenAIRequest:
     # session-wide credit accounting, shared across all models/instances
     _total_cost = 0.0
     _cost_call_count = 0
+    # session-wide token accounting (backends that do not return a cost, e.g. DashScope)
+    _prompt_tokens_total = 0
+    _completion_tokens_total = 0
+    _usage_call_count = 0
+    _estimated_cost = 0.0
     # session-wide output-guard accounting (LLMXMR_MAX_TOKENS)
     _truncated_count = 0
+    # session-wide 400 data_inspection_failed count (DashScope moderation)
+    _inspection_failed_count = 0
 
     def __init__(self, model):
         self.client = OpenAI(
@@ -69,13 +101,19 @@ class OpenAIRequest:
         # a response that hit the guard cannot be a valid sample, so discard it
         # and let the caller's retry draw a new one. Set to 0 to keep it.
         self.retry_truncated = self.max_tokens is not None and _env_flag("LLMXMR_RETRY_TRUNCATED")
+        # LLMXMR_PRICE_IN / LLMXMR_PRICE_OUT: USD per 1M prompt / completion
+        # tokens. Only used when the backend returns no cost (DashScope): each
+        # call then logs a token-based estimate. Empty/unset = no estimate.
+        self.price_in = _env_price("LLMXMR_PRICE_IN")
+        self.price_out = _env_price("LLMXMR_PRICE_OUT")
 
     def _track_cost(self, usage):
+        """Returns True when the backend reported a cost (OpenRouter usage.cost)."""
         cost = getattr(usage, "cost", None)
         if cost is None and getattr(usage, "model_extra", None):
             cost = usage.model_extra.get("cost")
         if cost is None:
-            return
+            return False
         cls = OpenAIRequest
         cls._total_cost += float(cost)
         cls._cost_call_count += 1
@@ -83,16 +121,35 @@ class OpenAIRequest:
             f"OpenRouter cost: ${float(cost):.6f} "
             f"(session total ${cls._total_cost:.4f} over {cls._cost_call_count} calls)"
         )
+        return True
 
-    def _log_usage(self, usage, finish_reason):
+    def _log_usage(self, usage, finish_reason, estimate_cost=False):
         # One line per call so a run log can be turned into a
         # completion_tokens distribution (guard headroom check).
+        prompt = getattr(usage, "prompt_tokens", None)
+        completion = getattr(usage, "completion_tokens", None)
+        details = getattr(usage, "prompt_tokens_details", None)
+        cached = getattr(details, "cached_tokens", None) if details is not None else None
+        cls = OpenAIRequest
+        cls._usage_call_count += 1
+        cls._prompt_tokens_total += prompt or 0
+        cls._completion_tokens_total += completion or 0
         logger.info(
             "completion usage: "
-            f"prompt_tokens={getattr(usage, 'prompt_tokens', None)} "
-            f"completion_tokens={getattr(usage, 'completion_tokens', None)} "
+            f"prompt_tokens={prompt} "
+            f"completion_tokens={completion} "
             f"finish_reason={finish_reason}"
+            + (f" cached_tokens={cached}" if cached is not None else "")
+            + f" (session tokens in={cls._prompt_tokens_total} out={cls._completion_tokens_total}"
+            f" over {cls._usage_call_count} calls)"
         )
+        if estimate_cost and self.price_in is not None and self.price_out is not None:
+            cost = ((prompt or 0) * self.price_in + (completion or 0) * self.price_out) / 1e6
+            cls._estimated_cost += cost
+            logger.info(
+                f"Estimated cost: ${cost:.6f} "
+                f"(session total ${cls._estimated_cost:.4f}; ${self.price_in}/${self.price_out} per 1M in/out)"
+            )
 
     @retry(
         wait=wait_random_exponential(multiplier=2, max=60),
@@ -120,8 +177,8 @@ class OpenAIRequest:
             finish_reason = getattr(choice, "finish_reason", None)
             token_usage = response.usage
             if token_usage is not None:
-                self._track_cost(token_usage)
-                self._log_usage(token_usage, finish_reason)
+                reported = self._track_cost(token_usage)
+                self._log_usage(token_usage, finish_reason, estimate_cost=not reported)
             if finish_reason == "length" and self.max_tokens is not None:
                 cls = OpenAIRequest
                 cls._truncated_count += 1
@@ -140,6 +197,23 @@ class OpenAIRequest:
 
         except TruncatedResponseError:
             raise  # already logged; do not dump the prompt below
+        except BadRequestError as e:
+            if not _is_data_inspection_failed(e):
+                logger.error(f"Unexpected error in OpenAIRequest.completion: {e}. messages: \n{messages}")
+                raise
+            cls = OpenAIRequest
+            cls._inspection_failed_count += 1
+            if isinstance(messages, str):
+                texts = [messages]
+            else:
+                texts = [str(m.get("content", "")) if isinstance(m, dict) else str(m) for m in messages or []]
+            head = " ".join((texts[-1] if texts else "")[:300].split())
+            logger.error(
+                f"data_inspection_failed (400) model={self.model}: {e}. Input left unchanged, not retried "
+                f"(session total {cls._inspection_failed_count}). "
+                f"prompt_chars={sum(len(t) for t in texts)} head={head!r}"
+            )
+            raise DataInspectionFailedError(str(e)) from e
         except RateLimitError as e:
             logger.warning(f"Rate limit exceeded in OpenAIRequest.completion: {e}")
             raise 
