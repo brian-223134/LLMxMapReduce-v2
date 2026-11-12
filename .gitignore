@@ -37,6 +37,11 @@ data/kisti-2608-r4/tex/*
 !data/kisti-2608-r4/tex/*.pdf
 data/kisti-2608-r7/*.jsonl
 !data/kisti-2608-r7/topics.pilot.jsonl
+# r7 은 topic 마다 하위 디렉터리(data/kisti-2608-r7/<topic>/) — 원문 jsonl·로그·진단 덤프(diag*/, 프롬프트 원문)는 무시
+data/kisti-2608-r7/*/*.jsonl
+!data/kisti-2608-r7/*/topics.*.jsonl
+data/kisti-2608-r7/*/log/
+data/kisti-2608-r7/*/diag*/
 data/kisti-2608-r7/tex/*
 !data/kisti-2608-r7/tex/*.pdf
 data/*.nohup.log
