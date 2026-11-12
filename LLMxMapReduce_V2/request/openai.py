@@ -1,3 +1,5 @@
+import datetime
+import json
 import os
 from openai import OpenAI, InternalServerError, RateLimitError, APIError, BadRequestError
 from tenacity import (
@@ -54,6 +56,11 @@ def _env_price(name):
     return float(value) if value not in (None, "") else None
 
 
+def _env_int(name):
+    value = os.environ.get(name)
+    return int(value) if value not in (None, "") else None
+
+
 class OpenAIRequest:
     # session-wide credit accounting, shared across all models/instances
     _total_cost = 0.0
@@ -67,6 +74,8 @@ class OpenAIRequest:
     _truncated_count = 0
     # session-wide 400 data_inspection_failed count (DashScope moderation)
     _inspection_failed_count = 0
+    # session-wide counter for LLMXMR_DUMP_DIR file names
+    _dump_count = 0
 
     def __init__(self, model):
         self.client = OpenAI(
@@ -106,6 +115,44 @@ class OpenAIRequest:
         # call then logs a token-based estimate. Empty/unset = no estimate.
         self.price_in = _env_price("LLMXMR_PRICE_IN")
         self.price_out = _env_price("LLMXMR_PRICE_OUT")
+        # LLMXMR_DUMP_DIR (diagnostics, default off): write every truncated
+        # completion (finish_reason == "length") with its prompt to
+        # <dir>/<NNNNN>_<finish_reason>.json, so a discarded sample can be told
+        # apart as a long-but-sane answer vs a repetition loop.
+        # LLMXMR_DUMP_MIN_COMPLETION: also dump non-truncated completions with at
+        # least this many completion tokens (for comparison). Unset = truncated only.
+        self.dump_dir = os.environ.get("LLMXMR_DUMP_DIR") or None
+        self.dump_min_completion = _env_int("LLMXMR_DUMP_MIN_COMPLETION")
+        if self.dump_dir:
+            os.makedirs(self.dump_dir, exist_ok=True)
+
+    def _dump(self, messages, answer, usage, finish_reason):
+        if not self.dump_dir:
+            return
+        completion = getattr(usage, "completion_tokens", None) if usage is not None else None
+        if finish_reason != "length":
+            if self.dump_min_completion is None or (completion or 0) < self.dump_min_completion:
+                return
+        cls = OpenAIRequest
+        cls._dump_count += 1
+        record = {
+            "seq": cls._dump_count,
+            "time": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+            "model": self.model,
+            "finish_reason": finish_reason,
+            "prompt_tokens": getattr(usage, "prompt_tokens", None) if usage is not None else None,
+            "completion_tokens": completion,
+            "max_tokens": self.max_tokens,
+            "temperature": self.temperature,
+            "messages": messages,
+            "answer": answer,
+        }
+        path = os.path.join(self.dump_dir, f"{cls._dump_count:05d}_{finish_reason}.json")
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(record, f, ensure_ascii=False, indent=1)
+        except OSError as e:  # diagnostics must never break a call
+            logger.warning(f"LLMXMR_DUMP_DIR write failed: {e}")
 
     def _track_cost(self, usage):
         """Returns True when the backend reported a cost (OpenRouter usage.cost)."""
@@ -179,6 +226,7 @@ class OpenAIRequest:
             if token_usage is not None:
                 reported = self._track_cost(token_usage)
                 self._log_usage(token_usage, finish_reason, estimate_cost=not reported)
+            self._dump(messages, answer, token_usage, finish_reason)
             if finish_reason == "length" and self.max_tokens is not None:
                 cls = OpenAIRequest
                 cls._truncated_count += 1

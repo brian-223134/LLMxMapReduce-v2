@@ -9,7 +9,7 @@ PYTHONPATH=LLMxMapReduce_V2 /data2/chanjoong/miniforge3/envs/llmxmr/bin/python -
 
 | 파일 | 대상 | 비고 |
 |---|---|---|
-| `test_openai_request.py` | `LLMxMapReduce_V2/request/openai.py` — env 프로파일(temperature·provider), 출력 가드(max_tokens, finish_reason=length 버림/유지), 비용·usage 로그 | OpenAI 클라이언트 mock. `openai`·`tenacity` 가 있는 env(llmxmr) 필요, 없으면 skip |
+| `test_openai_request.py` | `LLMxMapReduce_V2/request/openai.py` — env 프로파일(temperature·provider), 출력 가드(max_tokens, finish_reason=length 버림/유지), 비용·usage 로그, DashScope(토큰 기반 추정 비용·data_inspection_failed), LLMXMR_DUMP_DIR 덤프 | OpenAI 클라이언트 mock. `openai`·`tenacity` 가 있는 env(llmxmr) 필요, 없으면 skip |
 | `test_kisti_common.py` | `scripts/kisti_common.py` — id 규칙 B, 로그/.env 파서, 본문 통계 | |
 | `test_pool_ceiling.py` | `scripts/pool_ceiling.py` — pool/input ceiling 계산 | |
 | `test_leak_check.py` | `scripts/leak_check.py` — GT DOI·twin id·제목 누수 탐지, candidate.yaml/README 로더 | |

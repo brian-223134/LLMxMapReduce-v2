@@ -5,8 +5,10 @@
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -23,7 +25,8 @@ except ImportError:  # openai / tenacity 가 없는 env
 
 BASE_ENV = {"OPENAI_API_KEY": "sk-test", "OPENAI_API_BASE": "http://localhost/v1",
             "LLMXMR_PROVIDER": "", "LLMXMR_TEMPERATURE": "", "LLMXMR_MAX_TOKENS": "",
-            "LLMXMR_RETRY_TRUNCATED": "", "LLMXMR_TRACK_COST": ""}
+            "LLMXMR_RETRY_TRUNCATED": "", "LLMXMR_TRACK_COST": "",
+            "LLMXMR_DUMP_DIR": "", "LLMXMR_DUMP_MIN_COMPLETION": ""}
 PROFILE_ENV = {**BASE_ENV, "LLMXMR_PROVIDER": "akashml/fp8", "LLMXMR_TEMPERATURE": "0.6",
                "LLMXMR_MAX_TOKENS": "8192", "LLMXMR_TRACK_COST": "1"}
 # kisti-2608-r7 파일럿 (2026-11-11~): Alibaba DashScope OpenAI 호환 엔드포인트, 비용 미반환 → 토큰×단가 추정
@@ -73,6 +76,7 @@ class OpenAIRequestProfileTest(unittest.TestCase):
         ro.OpenAIRequest._usage_call_count = 0
         ro.OpenAIRequest._estimated_cost = 0.0
         ro.OpenAIRequest._inspection_failed_count = 0
+        ro.OpenAIRequest._dump_count = 0
 
     def test_unset_env_keeps_original_kwargs(self):
         req, create = make_request(BASE_ENV, [fake_response()])
@@ -212,6 +216,38 @@ class OpenAIRequestProfileTest(unittest.TestCase):
     def test_other_bad_request_is_not_inspection(self):
         self.assertFalse(ro._is_data_inspection_failed(bad_request("invalid_parameter_error", "bad")))
         self.assertTrue(ro._is_data_inspection_failed(bad_request("data_inspection_failed", "x")))
+
+    def test_dump_dir_saves_truncated_only_by_default(self):
+        with tempfile.TemporaryDirectory() as d:
+            env = {**DASHSCOPE_ENV, "LLMXMR_DUMP_DIR": d}
+            req, _ = make_request(env, [dashscope_response(completion=900),
+                                        dashscope_response(content="loop loop", finish_reason="length", completion=8192)])
+            messages = [{"role": "user", "content": "outline"}]
+            req.completion(messages)
+            with self.assertRaises(ro.TruncatedResponseError):
+                req.completion(messages)
+            self.assertEqual(sorted(os.listdir(d)), ["00001_length.json"])
+            with open(os.path.join(d, "00001_length.json"), encoding="utf-8") as f:
+                rec = json.load(f)
+            self.assertEqual(rec["answer"], "loop loop")
+            self.assertEqual(rec["messages"], messages)
+            self.assertEqual(rec["completion_tokens"], 8192)
+            self.assertEqual(rec["max_tokens"], 8192)
+
+    def test_dump_min_completion_also_saves_long_stop(self):
+        with tempfile.TemporaryDirectory() as d:
+            env = {**DASHSCOPE_ENV, "LLMXMR_DUMP_DIR": d, "LLMXMR_DUMP_MIN_COMPLETION": "4000"}
+            req, _ = make_request(env, [dashscope_response(completion=900), dashscope_response(completion=5000)])
+            req.completion("short")
+            req.completion("long")
+            self.assertEqual(sorted(os.listdir(d)), ["00001_stop.json"])
+
+    def test_dump_dir_unset_writes_nothing(self):
+        req, _ = make_request(DASHSCOPE_ENV, [dashscope_response(finish_reason="length", completion=8192)])
+        self.assertIsNone(req.dump_dir)
+        with mock.patch("builtins.open") as opened, self.assertRaises(ro.TruncatedResponseError):
+            req.completion("hi")
+        opened.assert_not_called()
 
 
 if __name__ == "__main__":
