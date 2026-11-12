@@ -1,0 +1,22 @@
+{
+  "topics": [
+    {
+      "title": "Securing Large Language Models: A Survey of Watermarking and Fingerprinting Techniques",
+      "slug": "llm-watermarking",
+      "n_gt_refs": 211,
+      "n_gt_refs_cutoff": 209,
+      "retrieval_cutoff_at": "2026-02-04",
+      "n_gt_in_view": 209,
+      "pool_size": 1200,
+      "pool_hits": 67,
+      "pool_ceiling": 0.3206,
+      "input_size": 209,
+      "input_hits": 37,
+      "input_ceiling": 0.177
+    }
+  ],
+  "mean_pool_ceiling": 0.3206,
+  "mean_input_ceiling": 0.177,
+  "n_topics": 1,
+  "denominator_mismatches": 0
+}

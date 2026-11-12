@@ -1,0 +1,81 @@
+{
+    "encode": {},
+    "hidden": {
+        "group": {
+            "neuron": {
+                "model": "qwen-plus-2025-12-01",
+                "infer_type": "OpenAI"
+            }
+        },
+        "skeleton": {
+            "single": {
+                "model": "qwen-plus-2025-12-01",
+                "infer_type": "OpenAI"
+            },
+            "concat": {
+                "model": "qwen-plus-2025-12-01",
+                "infer_type": "OpenAI"
+            }
+        },
+        "digest": {
+            "single": {
+                "model": "qwen-plus-2025-12-01",
+                "infer_type": "OpenAI"
+            },
+            "merge": {
+                "model": "qwen-plus-2025-12-01",
+                "infer_type": "OpenAI"
+            }
+        },
+        "skeleton_refinement": {
+            "cluster": {
+                "model": "qwen-plus-2025-12-01",
+                "infer_type": "OpenAI"
+            },
+            "convolution": {
+                "modify": {
+                    "model": "qwen-plus-2025-12-01",
+                    "infer_type": "OpenAI"
+                },
+                "convolution_kernel": {
+                    "model": "qwen-plus-2025-12-01",
+                    "infer_type": "OpenAI"
+                },
+                "eval": {
+                    "model": "qwen-plus-2025-12-01",
+                    "infer_type": "OpenAI",
+                    "max_score": 10
+                }
+            },
+            "refine": {
+                "modify": {
+                    "model": "qwen-plus-2025-12-01",
+                    "infer_type": "OpenAI"
+                },
+                "refine": {
+                    "model": "qwen-plus-2025-12-01",
+                    "infer_type": "OpenAI"
+                },
+                "eval": {
+                    "model": "qwen-plus-2025-12-01",
+                    "infer_type": "OpenAI",
+                    "max_score": 10
+                }
+            }
+        }
+    },
+    "decode": {
+        "orchestra": {
+            "model": "qwen-plus-2025-12-01",
+            "infer_type": "OpenAI"
+        },
+        "polish": {
+            "model": "qwen-plus-2025-12-01",
+            "infer_type": "OpenAI"
+        },
+        "chart": {
+            "model": "qwen-plus-2025-12-01",
+            "infer_type": "OpenAI"
+        }
+    }
+}

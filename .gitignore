@@ -1,4 +1,7 @@
 .env
+# .env 백업(.env.bak-* 등)에도 키가 들어 있다 — 템플릿만 추적
+.env.*
+!.env.example
 __pycache__/
 *.pyc
 # output은 무시하되, 컴파일된 서베이 PDF(output/tex/*.pdf)만 추적한다.
@@ -32,6 +35,15 @@ data/kisti-2608-r4/*.jsonl
 !data/kisti-2608-r4/topics.poc.jsonl
 data/kisti-2608-r4/tex/*
 !data/kisti-2608-r4/tex/*.pdf
+data/kisti-2608-r7/*.jsonl
+!data/kisti-2608-r7/topics.pilot.jsonl
+# r7 은 topic 마다 하위 디렉터리(data/kisti-2608-r7/<topic>/) — 원문 jsonl·로그·진단 덤프(diag*/, 프롬프트 원문)는 무시
+data/kisti-2608-r7/*/*.jsonl
+!data/kisti-2608-r7/*/topics.*.jsonl
+data/kisti-2608-r7/*/log/
+data/kisti-2608-r7/*/diag*/
+data/kisti-2608-r7/tex/*
+!data/kisti-2608-r7/tex/*.pdf
 data/*.nohup.log
 *.pid
 !data/kisti-2512/exclude_extra.txt

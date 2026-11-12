@@ -14,6 +14,10 @@
              sidecar(paper_dates.json) meta · 정책 파일 경로. 정책 없이 돈 run 은 policy "none" 으로 표기.
 
 주의: parallel_num > 1 이면 호출·비용은 topic 별로 나눌 수 없으므로 run 수준에만 적는다.
+비용: OpenRouter 는 응답의 usage.cost 합(total_cost_usd). 비용이 오지 않는 백엔드(DashScope, 2026-11-11~)는
+      .env 의 LLMXMR_PRICE_IN/OUT(USD/1M) × usage 줄의 토큰 합으로 estimated_cost_usd 를 적는다(캐시 할인 미반영 상한).
+      400 data_inspection_failed(입력 그대로 두고 보고) 건수는 log.data_inspection_failed.
+--config 를 안 주면 로그의 "Start pipeline with args" 의 config_file 을 쓴다(없으면 model_config_llama.json).
 
 사용:
   python scripts/run_manifest.py --log data/kisti-2608/log/stage3.log \
@@ -42,9 +46,12 @@ from kisti_common import (cited_indices, content_words, count_headings, iter_jso
 REPO = Path(__file__).resolve().parents[1]
 _COST = re.compile(r"OpenRouter cost: \$([0-9.]+)")
 _USAGE = re.compile(r"completion usage: prompt_tokens=(\S+) completion_tokens=(\S+) finish_reason=(\S+)")
+_CONFIG_ARG = re.compile(r"config_file='([^']+)'")
 _TS = "%Y-%m-%d-%H:%M:%S.%f"
 PROFILE_KEYS = ("OPENAI_API_BASE", "LLMXMR_PROVIDER", "LLMXMR_TEMPERATURE", "LLMXMR_MAX_TOKENS",
-                "LLMXMR_RETRY_TRUNCATED", "LLMXMR_TRACK_COST", "PROMPT_LANGUAGE")
+                "LLMXMR_RETRY_TRUNCATED", "LLMXMR_TRACK_COST", "LLMXMR_PRICE_IN", "LLMXMR_PRICE_OUT",
+                "PROMPT_LANGUAGE")
+DEFAULT_CONFIG = REPO / "LLMxMapReduce_V2/config/model_config_llama.json"
 
 
 def _load_json(path):
@@ -61,12 +68,30 @@ def _int(s):
         return None
 
 
-def summarize_log(records, max_tokens=None) -> dict:
-    """parse_log_records 결과 → run 수준 집계."""
+def _float(s):
+    try:
+        return float(s)
+    except (TypeError, ValueError):
+        return None
+
+
+def config_from_args(pipeline_args) -> Path | None:
+    """'Start pipeline with args: Namespace(..., config_file='./config/x.json', ...)' → 그 파일 경로.
+    stage3 는 LLMxMapReduce_V2/ 에서 돌므로 상대 경로는 거기 기준이다."""
+    m = _CONFIG_ARG.search(pipeline_args or "")
+    if not m:
+        return None
+    p = Path(m.group(1))
+    return p if p.is_absolute() else (REPO / "LLMxMapReduce_V2" / p).resolve()
+
+
+def summarize_log(records, max_tokens=None, prices=None) -> dict:
+    """parse_log_records 결과 → run 수준 집계. prices = (USD/1M 입력, USD/1M 출력) 이면 토큰 기반 추정 비용도 적는다."""
     s = {"records": len(records), "calls": 0, "total_cost_usd": 0.0, "usage_lines": 0,
+         "estimated_cost_usd": None, "prices_per_1m": None,
          "completion_tokens": {}, "prompt_tokens": {}, "finish_reasons": {},
          "truncated_discarded": 0, "truncated_kept": 0, "fence_fallback": 0, "illegal_bibkeys": 0,
-         "rate_limit_429": 0, "internal_server_errors": 0, "module_retries": 0,
+         "rate_limit_429": 0, "internal_server_errors": 0, "data_inspection_failed": 0, "module_retries": 0,
          "error_records": 0, "tracebacks": 0, "pipeline_args": None,
          "started": None, "finished": None, "duration_s": None}
     comp, prompt, reasons = [], [], Counter()
@@ -101,11 +126,18 @@ def summarize_log(records, max_tokens=None) -> dict:
             s["rate_limit_429"] += 1
         if "Internal server error" in msg:
             s["internal_server_errors"] += 1
+        if msg.startswith("data_inspection_failed (400)"):
+            s["data_inspection_failed"] += 1
         if msg.startswith("Finished call to") and "this was the" in msg:
             s["module_retries"] += 1
         if s["pipeline_args"] is None and msg.startswith("Start pipeline with args:"):
             s["pipeline_args"] = msg[len("Start pipeline with args:"):].strip()
     s["total_cost_usd"] = round(s["total_cost_usd"], 6)
+    if s["calls"] == 0:  # 비용이 오지 않는 백엔드(DashScope): 호출 수는 usage 줄 수
+        s["calls"] = s["usage_lines"]
+    if prices and prices[0] is not None and prices[1] is not None:
+        s["prices_per_1m"] = {"input": prices[0], "output": prices[1]}
+        s["estimated_cost_usd"] = round((sum(prompt) * prices[0] + sum(comp) * prices[1]) / 1e6, 6)
     s["finish_reasons"] = dict(reasons)
 
     def dist(vals):
@@ -120,8 +152,8 @@ def summarize_log(records, max_tokens=None) -> dict:
     if max_tokens and comp:
         s["completion_tokens"]["at_guard"] = sum(1 for c in comp if c >= max_tokens)
         s["completion_tokens"]["guard"] = max_tokens
-        s["completion_tokens"]["headroom_ratio"] = round(
-            max_tokens / max(c for c in comp if c < max_tokens), 2) if any(c < max_tokens for c in comp) else None
+        below = max((c for c in comp if c < max_tokens), default=0)
+        s["completion_tokens"]["headroom_ratio"] = round(max_tokens / below, 2) if below > 0 else None
     if records:
         s["started"], s["finished"] = records[0]["ts"], records[-1]["ts"]
         try:
@@ -208,7 +240,7 @@ def main():
     ap.add_argument("--output_jsonl", required=True)
     ap.add_argument("--input_jsonl", required=True)
     ap.add_argument("--env_file", default=str(REPO / ".env"))
-    ap.add_argument("--config", default=str(REPO / "LLMxMapReduce_V2/config/model_config_llama.json"))
+    ap.add_argument("--config", help="model config (기본: 로그의 pipeline args 의 config_file, 없으면 model_config_llama.json)")
     ap.add_argument("--pool_ceiling")
     ap.add_argument("--pools", help="Stage 1 pools.jsonl (retrieval_policy 블록). 기본: input_jsonl 옆의 pools.jsonl")
     ap.add_argument("--run_name")
@@ -221,7 +253,10 @@ def main():
     max_tokens = _int(profile.get("LLMXMR_MAX_TOKENS"))
     with open(args.log, encoding="utf-8", errors="replace") as f:
         records = parse_log_records(f)
-    log_summary = summarize_log(records, max_tokens)
+    prices = (_float(profile.get("LLMXMR_PRICE_IN")), _float(profile.get("LLMXMR_PRICE_OUT")))
+    log_summary = summarize_log(records, max_tokens, prices)
+    if not args.config:
+        args.config = str(config_from_args(log_summary["pipeline_args"]) or DEFAULT_CONFIG)
     topics = [per_topic_stats(r) for r in iter_jsonl(args.output_jsonl)]
 
     input_manifest_path = args.input_jsonl + ".manifest.json"
@@ -277,8 +312,11 @@ def main():
 
     ls = log_summary
     ct = ls["completion_tokens"]
+    est = ls["estimated_cost_usd"]
+    pt = ls["prompt_tokens"]
     print(f"run={run_name} topics={len(topics)} calls={ls['calls']} cost=${ls['total_cost_usd']:.4f} "
-          f"duration={ls['duration_s']}s")
+          f"est_cost={'$%.4f' % est if est is not None else None} "
+          f"tokens in={pt.get('sum')} out={ls['completion_tokens'].get('sum')} duration={ls['duration_s']}s")
     cv = manifest["corpus"] or {}
     print(f"corpus: {cv.get('view')} version={cv.get('version')}  policy={policy_summary['mode']} "
           f"({policy_summary['topics_with_policy']}/{len(topics)} topics, stage2 blocked={policy_summary['stage2_blocked_total']})")
@@ -286,7 +324,8 @@ def main():
           f"at_guard={ct.get('at_guard')} guard={ct.get('guard')} headroom={ct.get('headroom_ratio')}")
     print(f"truncated discarded={ls['truncated_discarded']} kept={ls['truncated_kept']} "
           f"fence_fallback={ls['fence_fallback']} illegal_bibkeys={ls['illegal_bibkeys']} "
-          f"429={ls['rate_limit_429']} module_retries={ls['module_retries']} errors={ls['error_records']} "
+          f"429={ls['rate_limit_429']} data_inspection_failed={ls['data_inspection_failed']} "
+          f"module_retries={ls['module_retries']} errors={ls['error_records']} "
           f"tracebacks={ls['tracebacks']}")
     for t in topics:
         pol = t["retrieval_policy"] or {}

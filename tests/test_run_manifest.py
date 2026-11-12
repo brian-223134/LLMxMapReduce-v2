@@ -61,6 +61,39 @@ class SummarizeLogTest(unittest.TestCase):
         self.assertEqual(s["calls"], 0)
         self.assertEqual(s["completion_tokens"], {})
         self.assertIsNone(s["duration_s"])
+        self.assertIsNone(s["estimated_cost_usd"])
+
+    def test_dashscope_log_estimates_cost_from_tokens(self):
+        log = (
+            rec("10:00:00.000", "INFO", "__main__:77",
+                "Start pipeline with args: Namespace(config_file='./config/model_config_qwen.json', block_count=1)")
+            + rec("10:00:01.000", "INFO", "request.openai:120",
+                  "completion usage: prompt_tokens=1000000 completion_tokens=5000 finish_reason=stop cached_tokens=0 "
+                  "(session tokens in=1000000 out=5000 over 1 calls)")
+            + rec("10:00:01.001", "INFO", "request.openai:130", "Estimated cost: $0.406000 (session total $0.4060; $0.4/$1.2 per 1M in/out)")
+            + rec("10:00:02.000", "INFO", "request.openai:120",
+                  "completion usage: prompt_tokens=500000 completion_tokens=0 finish_reason=stop")
+            + rec("10:00:03.000", "ERROR", "request.openai:170",
+                  "data_inspection_failed (400) model=qwen-plus-2025-12-01: Error code: 400. Input left unchanged, not retried")
+        )
+        s = rm.summarize_log(kc.parse_log_records(log), max_tokens=8192, prices=(0.4, 1.2))
+        self.assertEqual(s["calls"], 2)                   # 비용 줄이 없으면 usage 줄 수
+        self.assertEqual(s["total_cost_usd"], 0.0)
+        self.assertAlmostEqual(s["estimated_cost_usd"], 0.606)   # 1.5M×0.4 + 5K×1.2
+        self.assertEqual(s["prices_per_1m"], {"input": 0.4, "output": 1.2})
+        self.assertEqual(s["finish_reasons"], {"stop": 2})
+        self.assertAlmostEqual(s["completion_tokens"]["headroom_ratio"], round(8192 / 5000, 2))
+        zero = rm.summarize_log(kc.parse_log_records(log[-4:-2]), max_tokens=8192)  # completion 0 만 → 0 나눗셈 없이 None
+        self.assertIsNone(zero["completion_tokens"]["headroom_ratio"])
+        self.assertEqual(s["data_inspection_failed"], 1)
+        self.assertEqual(rm.config_from_args(s["pipeline_args"]),
+                         (ROOT / "LLMxMapReduce_V2/config/model_config_qwen.json").resolve())
+
+    def test_openrouter_log_keeps_cost_calls(self):
+        s = rm.summarize_log(kc.parse_log_records(LOG), max_tokens=8192, prices=(None, None))
+        self.assertEqual(s["calls"], 3)
+        self.assertIsNone(s["estimated_cost_usd"])
+        self.assertIsNone(rm.config_from_args(s["pipeline_args"]))
 
 
 class PerTopicTest(unittest.TestCase):

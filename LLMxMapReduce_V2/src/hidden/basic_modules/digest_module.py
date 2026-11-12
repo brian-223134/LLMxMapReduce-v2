@@ -2,6 +2,7 @@ import re
 from typing import List
 from tenacity import retry, stop_after_attempt, after_log, retry_if_exception_type
 from request import RequestWrapper
+from request.openai import DataInspectionFailedError
 from src.base_method.module import Neuron, Module
 from src.base_method.data import Dataset
 from src.data_structure import Digest, Survey
@@ -114,6 +115,10 @@ class SingleDigestNeuron(Neuron):
             new_digest.paper_infos = [paper_info]
             new_digest.parse_suggestion(result, paper_bibkey)
             new_digest = new_digest.parse_raw_digest(result, outline)
+        except DataInspectionFailedError:
+            # DashScope moderation (400 data_inspection_failed): report, do not
+            # halve the paper below to get past the filter (kisti-2608-r7 rule).
+            raise
         except Exception as e:
             new_digest.failure_count += 1
             content_len = int(len(paper_content) * 0.5)
